@@ -1,10 +1,10 @@
-import { API } from "@excalidraw/excalidraw/tests/helpers/api";
-
-import type { ObservedAppState } from "@excalidraw/excalidraw/types";
-import type { LinearElementEditor } from "@excalidraw/element";
-import type { SceneElementsMap } from "@excalidraw/element/types";
+import { API } from "@drawboard/drawboard/tests/helpers/api";
 
 import { AppStateDelta, Delta, ElementsDelta } from "../src/delta";
+
+import type { ObservedAppState } from "@drawboard/drawboard/types";
+import type { LinearElementEditor } from "@drawboard/element";
+import type { SceneElementsMap } from "@drawboard/element/types";
 
 describe("ElementsDelta", () => {
   describe("elements delta calculation", () => {

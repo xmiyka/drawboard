@@ -11,7 +11,7 @@ import {
   vectorScale,
   type GlobalPoint,
   type LocalPoint,
-} from "@excalidraw/math";
+} from "@drawboard/math";
 
 import {
   type Bounds,
@@ -21,9 +21,7 @@ import {
   getSizeFromPoints,
   isDevEnv,
   arrayToMap,
-} from "@excalidraw/common";
-
-import type { AppState } from "@excalidraw/excalidraw/types";
+} from "@drawboard/common";
 
 import {
   bindPointToSnapToElementOutline,
@@ -49,20 +47,22 @@ import {
 import { type ElementUpdate } from "./mutateElement";
 import { isBindableElement } from "./typeChecks";
 import {
-  type ExcalidrawElbowArrowElement,
+  type DrawboardElbowArrowElement,
   type NonDeletedSceneElementsMap,
 } from "./types";
 import { aabbForElement, pointInsideBounds } from "./bounds";
 import { getHoveredElementForBinding } from "./collision";
 
+import type { AppState } from "@drawboard/drawboard/types";
+
 import type { Heading } from "./heading";
 import type {
   Arrowhead,
   ElementsMap,
-  ExcalidrawBindableElement,
+  DrawboardBindableElement,
   FixedPointBinding,
   FixedSegment,
-  NonDeletedExcalidrawElement,
+  NonDeletedDrawboardElement,
   Ordered,
 } from "./types";
 
@@ -103,15 +103,15 @@ type ElbowArrowData = {
   endGlobalPoint: GlobalPoint;
   endHeading: Heading;
   commonBounds: Bounds;
-  hoveredStartElement: ExcalidrawBindableElement | null;
-  hoveredEndElement: ExcalidrawBindableElement | null;
+  hoveredStartElement: DrawboardBindableElement | null;
+  hoveredEndElement: DrawboardBindableElement | null;
 };
 
 const DEDUP_TRESHOLD = 1;
 export const BASE_PADDING = 40;
 
 const handleSegmentRenormalization = (
-  arrow: ExcalidrawElbowArrowElement,
+  arrow: DrawboardElbowArrowElement,
   elementsMap: NonDeletedSceneElementsMap,
 ) => {
   const nextFixedSegments: FixedSegment[] | null = arrow.fixedSegments
@@ -280,7 +280,7 @@ const handleSegmentRenormalization = (
 };
 
 const handleSegmentRelease = (
-  arrow: ExcalidrawElbowArrowElement,
+  arrow: DrawboardElbowArrowElement,
   fixedSegments: readonly FixedSegment[],
   elementsMap: NonDeletedSceneElementsMap,
 ) => {
@@ -463,13 +463,13 @@ const handleSegmentRelease = (
  *
  */
 const handleSegmentMove = (
-  arrow: ExcalidrawElbowArrowElement,
+  arrow: DrawboardElbowArrowElement,
   fixedSegments: readonly FixedSegment[],
   startHeading: Heading,
   endHeading: Heading,
-  hoveredStartElement: ExcalidrawBindableElement | null,
-  hoveredEndElement: ExcalidrawBindableElement | null,
-): ElementUpdate<ExcalidrawElbowArrowElement> => {
+  hoveredStartElement: DrawboardBindableElement | null,
+  hoveredEndElement: DrawboardBindableElement | null,
+): ElementUpdate<DrawboardElbowArrowElement> => {
   const activelyModifiedSegmentIdx = fixedSegments
     .map((segment, i) => {
       if (
@@ -704,16 +704,16 @@ const handleSegmentMove = (
 };
 
 const handleEndpointDrag = (
-  arrow: ExcalidrawElbowArrowElement,
+  arrow: DrawboardElbowArrowElement,
   updatedPoints: readonly LocalPoint[],
   fixedSegments: readonly FixedSegment[],
   startHeading: Heading,
   endHeading: Heading,
   startGlobalPoint: GlobalPoint,
   endGlobalPoint: GlobalPoint,
-  hoveredStartElement: ExcalidrawBindableElement | null,
-  hoveredEndElement: ExcalidrawBindableElement | null,
-): ElementUpdate<ExcalidrawElbowArrowElement> => {
+  hoveredStartElement: DrawboardBindableElement | null,
+  hoveredEndElement: DrawboardBindableElement | null,
+): ElementUpdate<DrawboardElbowArrowElement> => {
   let startIsSpecial = arrow.startIsSpecial ?? null;
   let endIsSpecial = arrow.endIsSpecial ?? null;
   const globalUpdatedPoints = updatedPoints.map((p, i) =>
@@ -905,7 +905,7 @@ const MAX_POS = 1e6;
  *
  */
 export const updateElbowArrowPoints = (
-  arrow: Readonly<ExcalidrawElbowArrowElement>,
+  arrow: Readonly<DrawboardElbowArrowElement>,
   elementsMap: NonDeletedSceneElementsMap,
   updates: {
     points?: readonly LocalPoint[];
@@ -916,7 +916,7 @@ export const updateElbowArrowPoints = (
   options?: {
     isDragging?: boolean;
   },
-): ElementUpdate<ExcalidrawElbowArrowElement> => {
+): ElementUpdate<DrawboardElbowArrowElement> => {
   if (arrow.points.length < 2) {
     return { points: updates.points ?? arrow.points };
   }
@@ -1248,7 +1248,7 @@ const getElbowArrowData = (
       type: "arrow",
       elbowed: true,
       points: nextPoints,
-    } as ExcalidrawElbowArrowElement,
+    } as DrawboardElbowArrowElement,
     "start",
     arrow.startBinding?.fixedPoint,
     origStartGlobalPoint,
@@ -1263,7 +1263,7 @@ const getElbowArrowData = (
       type: "arrow",
       elbowed: true,
       points: nextPoints,
-    } as ExcalidrawElbowArrowElement,
+    } as DrawboardElbowArrowElement,
     "end",
     arrow.endBinding?.fixedPoint,
     origEndGlobalPoint,
@@ -2084,7 +2084,7 @@ const commonAABB = (aabbs: Bounds[]): Bounds => [
 const getBindableElementForId = (
   id: string,
   elementsMap: ElementsMap,
-): ExcalidrawBindableElement | null => {
+): DrawboardBindableElement | null => {
   const element = elementsMap.get(id);
   if (element && isBindableElement(element)) {
     return element;
@@ -2096,9 +2096,9 @@ const getBindableElementForId = (
 const normalizeArrowElementUpdate = (
   global: GlobalPoint[],
   nextFixedSegments: readonly FixedSegment[] | null,
-  startIsSpecial?: ExcalidrawElbowArrowElement["startIsSpecial"],
-  endIsSpecial?: ExcalidrawElbowArrowElement["startIsSpecial"],
-): ElementUpdate<ExcalidrawElbowArrowElement> => {
+  startIsSpecial?: DrawboardElbowArrowElement["startIsSpecial"],
+  endIsSpecial?: DrawboardElbowArrowElement["startIsSpecial"],
+): ElementUpdate<DrawboardElbowArrowElement> => {
   const offsetX = global[0][0];
   const offsetY = global[0][1];
   let points = global.map((p) =>
@@ -2206,11 +2206,11 @@ const neighborIndexToHeading = (idx: number): Heading => {
 };
 
 const getGlobalPoint = (
-  arrow: ExcalidrawElbowArrowElement,
+  arrow: DrawboardElbowArrowElement,
   startOrEnd: "start" | "end",
   fixedPointRatio: [number, number] | undefined | null,
   initialPoint: GlobalPoint,
-  element?: ExcalidrawBindableElement | null,
+  element?: DrawboardBindableElement | null,
   elementsMap?: ElementsMap,
   isDragging?: boolean,
 ): GlobalPoint => {
@@ -2241,7 +2241,7 @@ const getGlobalPoint = (
 const getBindPointHeading = (
   p: GlobalPoint,
   otherPoint: GlobalPoint,
-  hoveredElement: ExcalidrawBindableElement | null | undefined,
+  hoveredElement: DrawboardBindableElement | null | undefined,
   origPoint: GlobalPoint,
   elementsMap: ElementsMap,
   zoom?: AppState["zoom"],
@@ -2269,7 +2269,7 @@ const getBindPointHeading = (
 const getHoveredElement = (
   origPoint: GlobalPoint,
   elementsMap: NonDeletedSceneElementsMap,
-  elements: readonly Ordered<NonDeletedExcalidrawElement>[],
+  elements: readonly Ordered<NonDeletedDrawboardElement>[],
   zoom?: AppState["zoom"],
 ) => {
   return getHoveredElementForBinding(

@@ -3,17 +3,17 @@
  *
  * for instance, a cubic bezier curve is specified by its four control points and
  * an ellipse is defined by its center, angle, semi major axis and semi minor axis
- * (but in semi-width and semi-height so it's more relevant to Excalidraw)
+ * (but in semi-width and semi-height so it's more relevant to Drawboard)
  *
  * the idea with pure shapes is so that we can provide collision and other geoemtric methods not depending on
- * the specifics of roughjs or elements in Excalidraw; instead, we can focus on the pure shapes themselves
+ * the specifics of roughjs or elements in Drawboard; instead, we can focus on the pure shapes themselves
  *
- * also included in this file are methods for converting an Excalidraw element or a Drawable from roughjs
+ * also included in this file are methods for converting an Drawboard element or a Drawable from roughjs
  * to pure shapes
  */
 import { pointsOnBezierCurves } from "points-on-curve";
 
-import { invariant } from "@excalidraw/common";
+import { invariant } from "@drawboard/common";
 import {
   curve,
   lineSegment,
@@ -32,27 +32,27 @@ import {
   vectorScale,
   type GlobalPoint,
   type LocalPoint,
-} from "@excalidraw/math";
+} from "@drawboard/math";
 
-import { getElementAbsoluteCoords } from "@excalidraw/element";
+import { getElementAbsoluteCoords } from "@drawboard/element";
 
 import type {
   ElementsMap,
-  ExcalidrawBindableElement,
-  ExcalidrawDiamondElement,
-  ExcalidrawElement,
-  ExcalidrawEllipseElement,
-  ExcalidrawEmbeddableElement,
-  ExcalidrawFrameLikeElement,
-  ExcalidrawFreeDrawElement,
-  ExcalidrawIframeElement,
-  ExcalidrawImageElement,
-  ExcalidrawLinearElement,
-  ExcalidrawRectangleElement,
-  ExcalidrawSelectionElement,
-  ExcalidrawTextElement,
-} from "@excalidraw/element/types";
-import type { Curve, LineSegment, Polygon, Radians } from "@excalidraw/math";
+  DrawboardBindableElement,
+  DrawboardDiamondElement,
+  DrawboardElement,
+  DrawboardEllipseElement,
+  DrawboardEmbeddableElement,
+  DrawboardFrameLikeElement,
+  DrawboardFreeDrawElement,
+  DrawboardIframeElement,
+  DrawboardImageElement,
+  DrawboardLinearElement,
+  DrawboardRectangleElement,
+  DrawboardSelectionElement,
+  DrawboardTextElement,
+} from "@drawboard/element/types";
+import type { Curve, LineSegment, Polygon, Radians } from "@drawboard/math";
 
 import type { Drawable, Op } from "roughjs/bin/core";
 
@@ -103,14 +103,14 @@ export type GeometricShape<Point extends GlobalPoint | LocalPoint> =
     };
 
 type RectangularElement =
-  | ExcalidrawRectangleElement
-  | ExcalidrawDiamondElement
-  | ExcalidrawFrameLikeElement
-  | ExcalidrawEmbeddableElement
-  | ExcalidrawImageElement
-  | ExcalidrawIframeElement
-  | ExcalidrawTextElement
-  | ExcalidrawSelectionElement;
+  | DrawboardRectangleElement
+  | DrawboardDiamondElement
+  | DrawboardFrameLikeElement
+  | DrawboardEmbeddableElement
+  | DrawboardImageElement
+  | DrawboardIframeElement
+  | DrawboardTextElement
+  | DrawboardSelectionElement;
 
 // polygon
 export const getPolygonShape = <Point extends GlobalPoint | LocalPoint>(
@@ -149,7 +149,7 @@ export const getPolygonShape = <Point extends GlobalPoint | LocalPoint>(
 
 // return the selection box for an element, possibly rotated as well
 export const getSelectionBoxShape = <Point extends GlobalPoint | LocalPoint>(
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
   padding = 10,
 ) => {
@@ -179,7 +179,7 @@ export const getSelectionBoxShape = <Point extends GlobalPoint | LocalPoint>(
 
 // ellipse
 export const getEllipseShape = <Point extends GlobalPoint | LocalPoint>(
-  element: ExcalidrawEllipseElement,
+  element: DrawboardEllipseElement,
 ): GeometricShape<Point> => {
   const { width, height, angle, x, y } = element;
 
@@ -263,7 +263,7 @@ const polylineFromPoints = <Point extends GlobalPoint | LocalPoint>(
 };
 
 export const getFreedrawShape = <Point extends GlobalPoint | LocalPoint>(
-  element: ExcalidrawFreeDrawElement,
+  element: DrawboardFreeDrawElement,
   center: Point,
   isClosed: boolean = false,
 ): GeometricShape<Point> => {
@@ -294,7 +294,7 @@ export const getFreedrawShape = <Point extends GlobalPoint | LocalPoint>(
 };
 
 export const getClosedCurveShape = <Point extends GlobalPoint | LocalPoint>(
-  element: ExcalidrawLinearElement,
+  element: DrawboardLinearElement,
   roughShape: Drawable,
   startingPoint: Point = pointFrom<Point>(0, 0),
   angleInRadian: Radians,
@@ -362,7 +362,7 @@ export const getClosedCurveShape = <Point extends GlobalPoint | LocalPoint>(
 export const segmentIntersectRectangleElement = <
   Point extends LocalPoint | GlobalPoint,
 >(
-  element: ExcalidrawBindableElement,
+  element: DrawboardBindableElement,
   segment: LineSegment<Point>,
   gap: number = 0,
 ): Point[] => {

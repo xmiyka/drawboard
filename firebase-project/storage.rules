@@ -1,11 +1,26 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{files}/rooms/{room}/{file} {
-    	allow get, write: if true;
+
+    // -----------------------------------------------------------------------
+    // Realtime collaboration files
+    //
+    // Open read/write by design — rooms are link-based and all files are
+    // encrypted by the client using the room key from the URL hash.
+    // -----------------------------------------------------------------------
+    match /files/rooms/{room}/{file} {
+      allow get, create, update, delete: if true;
     }
-    match /{files}/shareLinks/{shareLink}/{file} {
-    	allow get, write: if true;
+
+    match /files/shareLinks/{shareLink}/{file} {
+      allow get, create, update, delete: if true;
+    }
+
+    // -----------------------------------------------------------------------
+    // Deny everything else.
+    // -----------------------------------------------------------------------
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

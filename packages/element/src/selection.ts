@@ -1,9 +1,4 @@
-import { arrayToMap, isShallowEqual } from "@excalidraw/common";
-
-import type {
-  AppState,
-  InteractiveCanvasAppState,
-} from "@excalidraw/excalidraw/types";
+import { arrayToMap, isShallowEqual } from "@drawboard/common";
 
 import { getElementAbsoluteCoords, getElementBounds } from "./bounds";
 import { isElementInViewport } from "./sizeHelpers";
@@ -22,10 +17,15 @@ import { LinearElementEditor } from "./linearElementEditor";
 import { selectGroupsForSelectedElements } from "./groups";
 
 import type {
+  AppState,
+  InteractiveCanvasAppState,
+} from "@drawboard/drawboard/types";
+
+import type {
   ElementsMap,
   ElementsMapOrArray,
-  ExcalidrawElement,
-  NonDeletedExcalidrawElement,
+  DrawboardElement,
+  NonDeletedDrawboardElement,
 } from "./types";
 
 /**
@@ -35,7 +35,7 @@ import type {
  * @param selectedElements
  */
 export const excludeElementsInFramesFromSelection = <
-  T extends ExcalidrawElement,
+  T extends DrawboardElement,
 >(
   selectedElements: readonly T[],
 ) => {
@@ -56,8 +56,8 @@ export const excludeElementsInFramesFromSelection = <
 };
 
 export const getElementsWithinSelection = (
-  elements: readonly NonDeletedExcalidrawElement[],
-  selection: NonDeletedExcalidrawElement,
+  elements: readonly NonDeletedDrawboardElement[],
+  selection: NonDeletedDrawboardElement,
   elementsMap: ElementsMap,
   excludeElementsInFrames: boolean = true,
 ) => {
@@ -112,8 +112,8 @@ export const getElementsWithinSelection = (
 };
 
 export const getVisibleAndNonSelectedElements = (
-  elements: readonly NonDeletedExcalidrawElement[],
-  selectedElements: readonly NonDeletedExcalidrawElement[],
+  elements: readonly NonDeletedDrawboardElement[],
+  selectedElements: readonly NonDeletedDrawboardElement[],
   appState: AppState,
   elementsMap: ElementsMap,
 ) => {
@@ -135,12 +135,12 @@ export const getVisibleAndNonSelectedElements = (
 
 // FIXME move this into the editor instance to keep utility methods stateless
 export const isSomeElementSelected = (function () {
-  let lastElements: readonly NonDeletedExcalidrawElement[] | null = null;
+  let lastElements: readonly NonDeletedDrawboardElement[] | null = null;
   let lastSelectedElementIds: AppState["selectedElementIds"] | null = null;
   let isSelected: boolean | null = null;
 
   const ret = (
-    elements: readonly NonDeletedExcalidrawElement[],
+    elements: readonly NonDeletedDrawboardElement[],
     appState: Pick<AppState, "selectedElementIds">,
   ): boolean => {
     if (
@@ -177,8 +177,8 @@ export const getSelectedElements = (
     includeElementsInFrames?: boolean;
   },
 ) => {
-  const addedElements = new Set<ExcalidrawElement["id"]>();
-  const selectedElements: ExcalidrawElement[] = [];
+  const addedElements = new Set<DrawboardElement["id"]>();
+  const selectedElements: DrawboardElement[] = [];
   for (const element of elements.values()) {
     if (appState.selectedElementIds[element.id]) {
       selectedElements.push(element);
@@ -197,7 +197,7 @@ export const getSelectedElements = (
   }
 
   if (opts?.includeElementsInFrames) {
-    const elementsToInclude: ExcalidrawElement[] = [];
+    const elementsToInclude: DrawboardElement[] = [];
     selectedElements.forEach((element) => {
       if (isFrameLikeElement(element)) {
         getFrameChildren(elements, element.id).forEach(
@@ -244,8 +244,8 @@ export const makeNextSelectedElementIds = (
 };
 
 const _getLinearElementEditor = (
-  targetElements: readonly ExcalidrawElement[],
-  allElements: readonly NonDeletedExcalidrawElement[],
+  targetElements: readonly DrawboardElement[],
+  allElements: readonly NonDeletedDrawboardElement[],
 ) => {
   const linears = targetElements.filter(isLinearElement);
   if (linears.length === 1) {
@@ -264,8 +264,8 @@ const _getLinearElementEditor = (
 };
 
 export const getSelectionStateForElements = (
-  targetElements: readonly ExcalidrawElement[],
-  allElements: readonly NonDeletedExcalidrawElement[],
+  targetElements: readonly DrawboardElement[],
+  allElements: readonly NonDeletedDrawboardElement[],
   appState: AppState,
 ) => {
   return {
@@ -275,7 +275,7 @@ export const getSelectionStateForElements = (
         editingGroupId: appState.editingGroupId,
         selectedElementIds: excludeElementsInFramesFromSelection(
           targetElements,
-        ).reduce((acc: Record<ExcalidrawElement["id"], true>, element) => {
+        ).reduce((acc: Record<DrawboardElement["id"], true>, element) => {
           if (!isBoundToContainer(element)) {
             acc[element.id] = true;
           }

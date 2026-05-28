@@ -1,4 +1,4 @@
-import { invariant, isTransparent, type Bounds } from "@excalidraw/common";
+import { invariant, isTransparent, type Bounds } from "@drawboard/common";
 import {
   curveIntersectLineSegment,
   isPointWithinBounds,
@@ -11,21 +11,12 @@ import {
   vectorFromPoint,
   vectorNormalize,
   vectorScale,
-} from "@excalidraw/math";
+} from "@drawboard/math";
 
 import {
   ellipse,
   ellipseSegmentInterceptPoints,
-} from "@excalidraw/math/ellipse";
-
-import type {
-  Curve,
-  GlobalPoint,
-  LineSegment,
-  Radians,
-} from "@excalidraw/math";
-
-import type { FrameNameBounds } from "@excalidraw/excalidraw/types";
+} from "@drawboard/math/ellipse";
 
 import { isPathALoop } from "./utils";
 import {
@@ -59,22 +50,26 @@ import { LinearElementEditor } from "./linearElementEditor";
 
 import { distanceToElement } from "./distance";
 
+import type { FrameNameBounds } from "@drawboard/drawboard/types";
+
+import type { Curve, GlobalPoint, LineSegment, Radians } from "@drawboard/math";
+
 import type {
   ElementsMap,
-  ExcalidrawBindableElement,
-  ExcalidrawDiamondElement,
-  ExcalidrawElement,
-  ExcalidrawEllipseElement,
-  ExcalidrawFreeDrawElement,
-  ExcalidrawLinearElement,
-  ExcalidrawRectanguloidElement,
+  DrawboardBindableElement,
+  DrawboardDiamondElement,
+  DrawboardElement,
+  DrawboardEllipseElement,
+  DrawboardFreeDrawElement,
+  DrawboardLinearElement,
+  DrawboardRectanguloidElement,
   NonDeleted,
-  NonDeletedExcalidrawElement,
+  NonDeletedDrawboardElement,
   NonDeletedSceneElementsMap,
   Ordered,
 } from "./types";
 
-export const shouldTestInside = (element: ExcalidrawElement) => {
+export const shouldTestInside = (element: DrawboardElement) => {
   if (element.type === "arrow") {
     return false;
   }
@@ -98,7 +93,7 @@ export const shouldTestInside = (element: ExcalidrawElement) => {
 
 export type HitTestArgs = {
   point: GlobalPoint;
-  element: ExcalidrawElement;
+  element: DrawboardElement;
   threshold: number;
   elementsMap: ElementsMap;
   frameNameBound?: FrameNameBounds | null;
@@ -158,7 +153,7 @@ export const hitElementItself = ({
 
 export const hitElementBoundingBox = (
   point: GlobalPoint,
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
   tolerance = 0,
 ) => {
@@ -181,7 +176,7 @@ export const hitElementBoundingBoxOnly = (
 
 export const hitElementBoundText = (
   point: GlobalPoint,
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
 ): boolean => {
   const boundTextElementCandidate = getBoundTextElement(element, elementsMap);
@@ -206,7 +201,7 @@ export const hitElementBoundText = (
 };
 
 const bindingBorderTest = (
-  element: NonDeleted<ExcalidrawBindableElement>,
+  element: NonDeleted<DrawboardBindableElement>,
   [x, y]: Readonly<GlobalPoint>,
   elementsMap: NonDeletedSceneElementsMap,
   tolerance: number = 0,
@@ -255,11 +250,11 @@ const bindingBorderTest = (
 
 export const getAllHoveredElementAtPoint = (
   point: Readonly<GlobalPoint>,
-  elements: readonly Ordered<NonDeletedExcalidrawElement>[],
+  elements: readonly Ordered<NonDeletedDrawboardElement>[],
   elementsMap: NonDeletedSceneElementsMap,
-  toleranceFn?: (element: ExcalidrawBindableElement) => number,
-): NonDeleted<ExcalidrawBindableElement>[] => {
-  const candidateElements: NonDeleted<ExcalidrawBindableElement>[] = [];
+  toleranceFn?: (element: DrawboardBindableElement) => number,
+): NonDeleted<DrawboardBindableElement>[] => {
+  const candidateElements: NonDeleted<DrawboardBindableElement>[] = [];
   // We need to to hit testing from front (end of the array) to back (beginning of the array)
   // because array is ordered from lower z-index to highest and we want element z-index
   // with higher z-index
@@ -288,10 +283,10 @@ export const getAllHoveredElementAtPoint = (
 
 export const getHoveredElementForBinding = (
   point: Readonly<GlobalPoint>,
-  elements: readonly Ordered<NonDeletedExcalidrawElement>[],
+  elements: readonly Ordered<NonDeletedDrawboardElement>[],
   elementsMap: NonDeletedSceneElementsMap,
-  toleranceFn?: (element: ExcalidrawBindableElement) => number,
-): NonDeleted<ExcalidrawBindableElement> | null => {
+  toleranceFn?: (element: DrawboardBindableElement) => number,
+): NonDeleted<DrawboardBindableElement> | null => {
   const candidateElements = getAllHoveredElementAtPoint(
     point,
     elements,
@@ -312,7 +307,7 @@ export const getHoveredElementForBinding = (
     .sort(
       (a, b) => b.width ** 2 + b.height ** 2 - (a.width ** 2 + a.height ** 2),
     )
-    .pop() as NonDeleted<ExcalidrawBindableElement>;
+    .pop() as NonDeleted<DrawboardBindableElement>;
 };
 
 /**
@@ -324,7 +319,7 @@ export const getHoveredElementForBinding = (
  * @returns
  */
 export const intersectElementWithLineSegment = (
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
   line: LineSegment<GlobalPoint>,
   offset: number = 0,
@@ -444,7 +439,7 @@ const lineIntersections = (
 };
 
 const intersectLinearOrFreeDrawWithLineSegment = (
-  element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement,
+  element: DrawboardLinearElement | DrawboardFreeDrawElement,
   segment: LineSegment<GlobalPoint>,
   onlyFirst = false,
 ): GlobalPoint[] => {
@@ -493,7 +488,7 @@ const intersectLinearOrFreeDrawWithLineSegment = (
 };
 
 const intersectRectanguloidWithLineSegment = (
-  element: ExcalidrawRectanguloidElement,
+  element: DrawboardRectanguloidElement,
   elementsMap: ElementsMap,
   segment: LineSegment<GlobalPoint>,
   offset: number = 0,
@@ -552,7 +547,7 @@ const intersectRectanguloidWithLineSegment = (
  * @returns
  */
 const intersectDiamondWithLineSegment = (
-  element: ExcalidrawDiamondElement,
+  element: DrawboardDiamondElement,
   elementsMap: ElementsMap,
   l: LineSegment<GlobalPoint>,
   offset: number = 0,
@@ -602,7 +597,7 @@ const intersectDiamondWithLineSegment = (
  * @returns
  */
 const intersectEllipseWithLineSegment = (
-  element: ExcalidrawEllipseElement,
+  element: DrawboardEllipseElement,
   elementsMap: ElementsMap,
   l: LineSegment<GlobalPoint>,
   offset: number = 0,
@@ -628,7 +623,7 @@ const intersectEllipseWithLineSegment = (
  */
 const isPointOnElementOutline = (
   point: GlobalPoint,
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
   tolerance = 1,
 ) => distanceToElement(element, elementsMap, point) <= tolerance;
@@ -642,7 +637,7 @@ const isPointOnElementOutline = (
  */
 export const isPointInElement = (
   point: GlobalPoint,
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
 ) => {
   if (
@@ -678,13 +673,13 @@ export const isPointInElement = (
 };
 
 export const isBindableElementInsideOtherBindable = (
-  innerElement: ExcalidrawBindableElement,
-  outerElement: ExcalidrawBindableElement,
+  innerElement: DrawboardBindableElement,
+  outerElement: DrawboardBindableElement,
   elementsMap: ElementsMap,
 ): boolean => {
   // Get corner points of the inner element based on its type
   const getCornerPoints = (
-    element: ExcalidrawElement,
+    element: DrawboardElement,
     offset: number,
   ): GlobalPoint[] => {
     const { x, y, width, height, angle } = element;

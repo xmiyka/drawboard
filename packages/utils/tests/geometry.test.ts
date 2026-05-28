@@ -6,16 +6,16 @@ import {
   pointOnPolygon,
   polygonIncludesPoint,
   segmentsIntersectAt,
-} from "@excalidraw/math";
+} from "@drawboard/math";
+
+import { pointInEllipse, pointOnEllipse, type Ellipse } from "../src/shape";
 
 import type {
   GlobalPoint,
   LineSegment,
   Polygon,
   Radians,
-} from "@excalidraw/math";
-
-import { pointInEllipse, pointOnEllipse, type Ellipse } from "../src/shape";
+} from "@drawboard/math";
 
 describe("point and line", () => {
   // const l: Line<GlobalPoint> = line(point(1, 0), point(1, 2));

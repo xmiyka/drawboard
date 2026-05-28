@@ -2,9 +2,9 @@ import {
   pointFromPair,
   type GlobalPoint,
   type LocalPoint,
-} from "@excalidraw/math";
+} from "@drawboard/math";
 
-import type { NullableGridSize } from "@excalidraw/excalidraw/types";
+import type { NullableGridSize } from "@drawboard/drawboard/types";
 
 export const getSizeFromPoints = (
   points: readonly (GlobalPoint | LocalPoint)[],

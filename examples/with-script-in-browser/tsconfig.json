@@ -4,6 +4,19 @@
     "moduleResolution": "Bundler",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": "../..",
+    "paths": {
+      "@drawboard/common": ["./packages/common/src/index.ts"],
+      "@drawboard/common/*": ["./packages/common/src/*"],
+      "@drawboard/drawboard": ["./packages/drawboard/index.tsx"],
+      "@drawboard/drawboard/*": ["./packages/drawboard/*"],
+      "@drawboard/element": ["./packages/element/src/index.ts"],
+      "@drawboard/element/*": ["./packages/element/src/*"],
+      "@drawboard/math": ["./packages/math/src/index.ts"],
+      "@drawboard/math/*": ["./packages/math/src/*"],
+      "@drawboard/utils": ["./packages/utils/src/index.ts"],
+      "@drawboard/utils/*": ["./packages/utils/src/*"]
+    }
   }
 }

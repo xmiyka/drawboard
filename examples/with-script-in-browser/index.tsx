@@ -1,29 +1,29 @@
 import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import "@excalidraw/excalidraw/index.css";
-
-import type * as TExcalidraw from "@excalidraw/excalidraw";
+import "@drawboard/drawboard/index.css";
 
 import App from "./components/ExampleApp";
 
+import type * as TDrawboard from "@drawboard/drawboard";
+
 declare global {
   interface Window {
-    ExcalidrawLib: typeof TExcalidraw;
+    DrawboardLib: typeof TDrawboard;
   }
 }
 
 const rootElement = document.getElementById("root")!;
 const root = createRoot(rootElement);
-const { Excalidraw } = window.ExcalidrawLib;
+const { Drawboard } = window.DrawboardLib;
 root.render(
   <StrictMode>
     <App
-      appTitle={"Excalidraw Example"}
+      appTitle={"Drawboard Example"}
       useCustom={(api: any, args?: any[]) => {}}
-      excalidrawLib={window.ExcalidrawLib}
+      drawboardLib={window.DrawboardLib}
     >
-      <Excalidraw />
+      <Drawboard />
     </App>
   </StrictMode>,
 );

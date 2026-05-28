@@ -2,11 +2,9 @@ import {
   curvePointDistance,
   distanceToLineSegment,
   pointRotateRads,
-} from "@excalidraw/math";
+} from "@drawboard/math";
 
-import { ellipse, ellipseDistanceFromPoint } from "@excalidraw/math/ellipse";
-
-import type { GlobalPoint, Radians } from "@excalidraw/math";
+import { ellipse, ellipseDistanceFromPoint } from "@drawboard/math/ellipse";
 
 import {
   deconstructDiamondElement,
@@ -16,18 +14,20 @@ import {
 
 import { elementCenterPoint } from "./bounds";
 
+import type { GlobalPoint, Radians } from "@drawboard/math";
+
 import type {
   ElementsMap,
-  ExcalidrawDiamondElement,
-  ExcalidrawElement,
-  ExcalidrawEllipseElement,
-  ExcalidrawFreeDrawElement,
-  ExcalidrawLinearElement,
-  ExcalidrawRectanguloidElement,
+  DrawboardDiamondElement,
+  DrawboardElement,
+  DrawboardEllipseElement,
+  DrawboardFreeDrawElement,
+  DrawboardLinearElement,
+  DrawboardRectanguloidElement,
 } from "./types";
 
 export const distanceToElement = (
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
   p: GlobalPoint,
 ): number => {
@@ -61,7 +61,7 @@ export const distanceToElement = (
  * @returns The eucledian distance to the outline of the rectanguloid element
  */
 const distanceToRectanguloidElement = (
-  element: ExcalidrawRectanguloidElement,
+  element: DrawboardRectanguloidElement,
   elementsMap: ElementsMap,
   p: GlobalPoint,
 ) => {
@@ -90,7 +90,7 @@ const distanceToRectanguloidElement = (
  * @returns The eucledian distance to the outline of the diamond
  */
 const distanceToDiamondElement = (
-  element: ExcalidrawDiamondElement,
+  element: DrawboardDiamondElement,
   elementsMap: ElementsMap,
   p: GlobalPoint,
 ): number => {
@@ -119,7 +119,7 @@ const distanceToDiamondElement = (
  * @returns The eucledian distance to the outline of the ellipse
  */
 const distanceToEllipseElement = (
-  element: ExcalidrawEllipseElement,
+  element: DrawboardEllipseElement,
   elementsMap: ElementsMap,
   p: GlobalPoint,
 ): number => {
@@ -132,7 +132,7 @@ const distanceToEllipseElement = (
 };
 
 const distanceToLinearOrFreeDraElement = (
-  element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement,
+  element: DrawboardLinearElement | DrawboardFreeDrawElement,
   p: GlobalPoint,
 ) => {
   const [lines, curves] = deconstructLinearOrFreeDrawElement(element);

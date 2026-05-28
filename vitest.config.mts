@@ -6,43 +6,43 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: /^@excalidraw\/common$/,
+        find: /^@drawboard\/common$/,
         replacement: path.resolve(__dirname, "./packages/common/src/index.ts"),
       },
       {
-        find: /^@excalidraw\/common\/(.*?)/,
+        find: /^@drawboard\/common\/(.*?)/,
         replacement: path.resolve(__dirname, "./packages/common/src/$1"),
       },
       {
-        find: /^@excalidraw\/element$/,
+        find: /^@drawboard\/element$/,
         replacement: path.resolve(__dirname, "./packages/element/src/index.ts"),
       },
       {
-        find: /^@excalidraw\/element\/(.*?)/,
+        find: /^@drawboard\/element\/(.*?)/,
         replacement: path.resolve(__dirname, "./packages/element/src/$1"),
       },
       {
-        find: /^@excalidraw\/excalidraw$/,
-        replacement: path.resolve(__dirname, "./packages/excalidraw/index.tsx"),
+        find: /^@drawboard\/drawboard$/,
+        replacement: path.resolve(__dirname, "./packages/drawboard/index.tsx"),
       },
       {
-        find: /^@excalidraw\/excalidraw\/(.*?)/,
-        replacement: path.resolve(__dirname, "./packages/excalidraw/$1"),
+        find: /^@drawboard\/drawboard\/(.*?)/,
+        replacement: path.resolve(__dirname, "./packages/drawboard/$1"),
       },
       {
-        find: /^@excalidraw\/math$/,
+        find: /^@drawboard\/math$/,
         replacement: path.resolve(__dirname, "./packages/math/src/index.ts"),
       },
       {
-        find: /^@excalidraw\/math\/(.*?)/,
+        find: /^@drawboard\/math\/(.*?)/,
         replacement: path.resolve(__dirname, "./packages/math/src/$1"),
       },
       {
-        find: /^@excalidraw\/utils$/,
+        find: /^@drawboard\/utils$/,
         replacement: path.resolve(__dirname, "./packages/utils/src/index.ts"),
       },
       {
-        find: /^@excalidraw\/utils\/(.*?)/,
+        find: /^@drawboard\/utils\/(.*?)/,
         replacement: path.resolve(__dirname, "./packages/utils/src/$1"),
       },
     ],

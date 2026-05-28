@@ -1,32 +1,32 @@
-import { pointFrom } from "@excalidraw/math";
+import { pointFrom } from "@drawboard/math";
 
 import {
   FONT_FAMILY,
   ORIG_ID,
   ROUNDNESS,
   isPrimitive,
-} from "@excalidraw/common";
+} from "@drawboard/common";
 
-import { Excalidraw, mutateElement } from "@excalidraw/excalidraw";
+import { Drawboard, mutateElement } from "@drawboard/drawboard";
 
-import { actionDuplicateSelection } from "@excalidraw/excalidraw/actions";
+import { actionDuplicateSelection } from "@drawboard/drawboard/actions";
 
-import { API } from "@excalidraw/excalidraw/tests/helpers/api";
+import { API } from "@drawboard/drawboard/tests/helpers/api";
 
-import { UI, Keyboard, Pointer } from "@excalidraw/excalidraw/tests/helpers/ui";
+import { UI, Keyboard, Pointer } from "@drawboard/drawboard/tests/helpers/ui";
 
 import {
   act,
   assertElements,
   getCloneByOrigId,
   render,
-} from "@excalidraw/excalidraw/tests/test-utils";
-
-import type { LocalPoint } from "@excalidraw/math";
+} from "@drawboard/drawboard/tests/test-utils";
 
 import { duplicateElement, duplicateElements } from "../src/duplicate";
 
-import type { ExcalidrawLinearElement } from "../src/types";
+import type { LocalPoint } from "@drawboard/math";
+
+import type { DrawboardLinearElement } from "../src/types";
 
 const { h } = window;
 const mouse = new Pointer("mouse");
@@ -215,7 +215,7 @@ describe("duplicating multiple elements", () => {
 
     const clonedArrows = duplicatedElements.filter(
       (e) => e.type === "arrow",
-    ) as ExcalidrawLinearElement[];
+    ) as DrawboardLinearElement[];
 
     const [clonedRectangle, clonedText1, , clonedArrow2, clonedArrowLabel] =
       duplicatedElements as any as typeof origElements;
@@ -401,7 +401,7 @@ describe("duplicating multiple elements", () => {
 
 describe("group-related duplication", () => {
   beforeEach(async () => {
-    await render(<Excalidraw />);
+    await render(<Drawboard />);
   });
 
   it("action-duplicating within group", async () => {
@@ -510,7 +510,7 @@ describe("group-related duplication", () => {
 
 describe("duplication z-order", () => {
   beforeEach(async () => {
-    await render(<Excalidraw />);
+    await render(<Drawboard />);
   });
 
   it("duplication z order with Cmd+D for the lowest z-ordered element should be +1 for the clone", () => {

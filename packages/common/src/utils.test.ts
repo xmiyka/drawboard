@@ -1,10 +1,6 @@
-import {
-  isTransparent,
-  mapFind,
-  reduceToCommonValue,
-} from "@excalidraw/common";
+import { isTransparent, mapFind, reduceToCommonValue } from "@drawboard/common";
 
-describe("@excalidraw/common/utils", () => {
+describe("@drawboard/common/utils", () => {
   describe("isTransparent()", () => {
     it("should return true when color is rgb transparent", () => {
       expect(isTransparent("#ff00")).toEqual(true);

@@ -1,16 +1,13 @@
-import {
-  convertToExcalidrawElements,
-  Excalidraw,
-} from "@excalidraw/excalidraw";
+import { convertToDrawboardElements, Drawboard } from "@drawboard/drawboard";
 
-import { API } from "@excalidraw/excalidraw/tests/helpers/api";
-import { Keyboard, Pointer } from "@excalidraw/excalidraw/tests/helpers/ui";
+import { API } from "@drawboard/drawboard/tests/helpers/api";
+import { Keyboard, Pointer } from "@drawboard/drawboard/tests/helpers/ui";
 import {
   getCloneByOrigId,
   render,
-} from "@excalidraw/excalidraw/tests/test-utils";
+} from "@drawboard/drawboard/tests/test-utils";
 
-import type { ExcalidrawElement } from "../src/types";
+import type { DrawboardElement } from "../src/types";
 
 const { h } = window;
 const mouse = new Pointer("mouse");
@@ -35,8 +32,8 @@ describe("adding elements to frames", () => {
   };
 
   function resizeFrameOverElement(
-    frame: ExcalidrawElement,
-    element: ExcalidrawElement,
+    frame: DrawboardElement,
+    element: DrawboardElement,
   ) {
     mouse.clickAt(0, 0);
     mouse.downAt(frame.x + frame.width, frame.y + frame.height);
@@ -48,8 +45,8 @@ describe("adding elements to frames", () => {
   }
 
   function dragElementIntoFrame(
-    frame: ExcalidrawElement,
-    element: ExcalidrawElement,
+    frame: DrawboardElement,
+    element: DrawboardElement,
   ) {
     mouse.clickAt(element.x, element.y);
     mouse.downAt(element.x + element.width / 2, element.y + element.height / 2);
@@ -58,7 +55,7 @@ describe("adding elements to frames", () => {
   }
 
   function selectElementAndDuplicate(
-    element: ExcalidrawElement,
+    element: DrawboardElement,
     moveTo: [number, number] = [element.x + 25, element.y + 25],
   ) {
     const [x, y] = [
@@ -73,20 +70,20 @@ describe("adding elements to frames", () => {
     });
   }
 
-  function expectEqualIds(expected: ExcalidrawElement[]) {
+  function expectEqualIds(expected: DrawboardElement[]) {
     expect(h.elements.map((x) => x.id)).toEqual(expected.map((x) => x.id));
   }
 
-  let frame: ExcalidrawElement;
-  let rect1: ExcalidrawElement;
-  let rect2: ExcalidrawElement;
-  let rect3: ExcalidrawElement;
-  let rect4: ExcalidrawElement;
-  let text: ExcalidrawElement;
-  let arrow: ExcalidrawElement;
+  let frame: DrawboardElement;
+  let rect1: DrawboardElement;
+  let rect2: DrawboardElement;
+  let rect3: DrawboardElement;
+  let rect4: DrawboardElement;
+  let text: DrawboardElement;
+  let arrow: DrawboardElement;
 
   beforeEach(async () => {
-    await render(<Excalidraw />);
+    await render(<Drawboard />);
 
     frame = API.createElement({ id: "id0", type: "frame", x: 0, width: 150 });
     rect1 = API.createElement({
@@ -257,7 +254,7 @@ describe("adding elements to frames", () => {
     initialOrder: ElementType[],
     expectedOrder: ElementType[],
   ) => {
-    await render(<Excalidraw />);
+    await render(<Drawboard />);
 
     const frame = API.createElement({ type: "frame", x: 0, y: 0 });
 
@@ -265,7 +262,7 @@ describe("adding elements to frames", () => {
       reorderElements(
         [
           frame,
-          ...convertToExcalidrawElements([
+          ...convertToDrawboardElements([
             {
               type: containerType,
               x: 100,

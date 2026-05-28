@@ -1,15 +1,15 @@
-import type {
-  ExcalidrawElement,
-  FontFamilyValues,
-} from "@excalidraw/element/types";
-import type { AppProps, AppState } from "@excalidraw/excalidraw/types";
-
 import { COLOR_PALETTE } from "./colors";
+
+import type {
+  DrawboardElement,
+  FontFamilyValues,
+} from "@drawboard/element/types";
+import type { AppProps, AppState } from "@drawboard/drawboard/types";
 
 export const supportsResizeObserver =
   typeof window !== "undefined" && "ResizeObserver" in window;
 
-export const APP_NAME = "Excalidraw";
+export const APP_NAME = "Drawboard";
 
 // distance when creating text before it's considered `autoResize: false`
 // we're using higher threshold so that clicks that end up being drags
@@ -77,7 +77,7 @@ export enum EVENT {
   VISIBILITY_CHANGE = "visibilitychange",
   SCROLL = "scroll",
   // custom events
-  EXCALIDRAW_LINK = "excalidraw-link",
+  DRAWBOARD_LINK = "drawboard-link",
   MENU_ITEM_SELECT = "menu.itemSelect",
   MESSAGE = "message",
   FULLSCREENCHANGE = "fullscreenchange",
@@ -193,13 +193,13 @@ export const THEME = {
 export const DARK_THEME_FILTER = "invert(93%) hue-rotate(180deg)";
 
 export const FRAME_STYLE = {
-  strokeColor: "#bbb" as ExcalidrawElement["strokeColor"],
-  strokeWidth: 2 as ExcalidrawElement["strokeWidth"],
-  strokeStyle: "solid" as ExcalidrawElement["strokeStyle"],
-  fillStyle: "solid" as ExcalidrawElement["fillStyle"],
-  roughness: 0 as ExcalidrawElement["roughness"],
-  roundness: null as ExcalidrawElement["roundness"],
-  backgroundColor: "transparent" as ExcalidrawElement["backgroundColor"],
+  strokeColor: "#bbb" as DrawboardElement["strokeColor"],
+  strokeWidth: 2 as DrawboardElement["strokeWidth"],
+  strokeStyle: "solid" as DrawboardElement["strokeStyle"],
+  fillStyle: "solid" as DrawboardElement["fillStyle"],
+  roughness: 0 as DrawboardElement["roughness"],
+  roundness: null as DrawboardElement["roundness"],
+  backgroundColor: "transparent" as DrawboardElement["backgroundColor"],
   radius: 8,
   nameOffsetY: 3,
   nameColorLightTheme: "#999999",
@@ -249,19 +249,19 @@ export const STRING_MIME_TYPES = {
   text: "text/plain",
   html: "text/html",
   json: "application/json",
-  // excalidraw data
-  excalidraw: "application/vnd.excalidraw+json",
+  // drawboard data
+  drawboard: "application/vnd.drawboard+json",
   // LEGACY: fully-qualified library JSON data
-  excalidrawlib: "application/vnd.excalidrawlib+json",
-  // list of excalidraw library item ids
-  excalidrawlibIds: "application/vnd.excalidrawlib.ids+json",
+  drawboardlib: "application/vnd.drawboardlib+json",
+  // list of drawboard library item ids
+  drawboardlibIds: "application/vnd.drawboardlib.ids+json",
 } as const;
 
 export const MIME_TYPES = {
   ...STRING_MIME_TYPES,
-  // image-encoded excalidraw data
-  "excalidraw.svg": "image/svg+xml",
-  "excalidraw.png": "image/png",
+  // image-encoded drawboard data
+  "drawboard.svg": "image/svg+xml",
+  "drawboard.png": "image/png",
   // binary
   binary: "application/octet-stream",
   // image
@@ -281,14 +281,14 @@ export const EXPORT_IMAGE_TYPES = {
 } as const;
 
 export const EXPORT_DATA_TYPES = {
-  excalidraw: "excalidraw",
-  excalidrawClipboard: "excalidraw/clipboard",
-  excalidrawLibrary: "excalidrawlib",
-  excalidrawClipboardWithAPI: "excalidraw-api/clipboard",
+  drawboard: "drawboard",
+  drawboardClipboard: "drawboard/clipboard",
+  drawboardLibrary: "drawboardlib",
+  drawboardClipboardWithAPI: "drawboard-api/clipboard",
 } as const;
 
 export const getExportSource = () =>
-  window.EXCALIDRAW_EXPORT_SOURCE || window.location.origin;
+  window.DRAWBOARD_EXPORT_SOURCE || window.location.origin;
 
 // time in milliseconds
 export const IMAGE_RENDER_TIMEOUT = 500;
@@ -347,8 +347,8 @@ export const SVG_DOCUMENT_PREAMBLE = `<?xml version="1.0" standalone="no"?>
 export const ENCRYPTION_KEY_BITS = 128;
 
 export const VERSIONS = {
-  excalidraw: 2,
-  excalidrawLibrary: 2,
+  drawboard: 2,
+  drawboardLibrary: 2,
 } as const;
 
 export const BOUND_TEXT_PADDING = 5;
@@ -408,14 +408,14 @@ export const STROKE_WIDTH = {
 } as const;
 
 export const DEFAULT_ELEMENT_PROPS: {
-  strokeColor: ExcalidrawElement["strokeColor"];
-  backgroundColor: ExcalidrawElement["backgroundColor"];
-  fillStyle: ExcalidrawElement["fillStyle"];
-  strokeWidth: ExcalidrawElement["strokeWidth"];
-  strokeStyle: ExcalidrawElement["strokeStyle"];
-  roughness: ExcalidrawElement["roughness"];
-  opacity: ExcalidrawElement["opacity"];
-  locked: ExcalidrawElement["locked"];
+  strokeColor: DrawboardElement["strokeColor"];
+  backgroundColor: DrawboardElement["backgroundColor"];
+  fillStyle: DrawboardElement["fillStyle"];
+  strokeWidth: DrawboardElement["strokeWidth"];
+  strokeStyle: DrawboardElement["strokeStyle"];
+  roughness: DrawboardElement["roughness"];
+  opacity: DrawboardElement["opacity"];
+  locked: DrawboardElement["locked"];
 } = {
   strokeColor: COLOR_PALETTE.black,
   backgroundColor: COLOR_PALETTE.transparent,
@@ -462,9 +462,9 @@ export const TOOL_TYPE = {
 } as const;
 
 export const EDITOR_LS_KEYS = {
-  OAI_API_KEY: "excalidraw-oai-api-key",
+  OAI_API_KEY: "drawboard-oai-api-key",
   // legacy naming (non)scheme
-  MERMAID_TO_EXCALIDRAW: "mermaid-to-excalidraw",
+  MERMAID_TO_DRAWBOARD: "mermaid-to-drawboard",
   PUBLISH_LIBRARY: "publish-library-data",
 } as const;
 

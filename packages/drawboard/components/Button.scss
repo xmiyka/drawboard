@@ -1,0 +1,7 @@
+@use "../css/theme" as *;
+
+.drawboard {
+  .drawboard-button {
+    @include outlineButtonStyles;
+  }
+}

@@ -8,22 +8,6 @@ import React, {
   cloneElement,
 } from "react";
 
-import type * as TExcalidraw from "@excalidraw/excalidraw";
-import type { ImportedLibraryData } from "@excalidraw/excalidraw/data/types";
-import type {
-  NonDeletedExcalidrawElement,
-  Theme,
-} from "@excalidraw/excalidraw/element/types";
-import type {
-  AppState,
-  BinaryFileData,
-  ExcalidrawImperativeAPI,
-  ExcalidrawInitialDataState,
-  Gesture,
-  LibraryItems,
-  PointerDownState as ExcalidrawPointerDownState,
-} from "@excalidraw/excalidraw/types";
-
 import initialData from "../initialData";
 import {
   resolvablePromise,
@@ -38,6 +22,27 @@ import MobileFooter from "./MobileFooter";
 import ExampleSidebar from "./sidebar/ExampleSidebar";
 
 import "./ExampleApp.scss";
+
+import type {
+  NonDeletedDrawboardElement,
+  Theme,
+} from "@drawboard/element/types";
+import type {
+  AppState,
+  BinaryFileData,
+  DrawboardImperativeAPI,
+  DrawboardInitialDataState,
+  Gesture,
+  LibraryItems,
+  PointerDownState as DrawboardPointerDownState,
+} from "@drawboard/drawboard/types";
+import type { ImportedLibraryData } from "@drawboard/drawboard/data/types";
+import type {
+  SavedChats,
+  TTDPersistenceAdapter,
+} from "@drawboard/drawboard/components/TTDDialog/types";
+import type * as TDrawboard from "@drawboard/drawboard";
+import type { Radians } from "@drawboard/math";
 
 import type { ResolvablePromise } from "../utils";
 
@@ -63,13 +68,14 @@ type PointerDownState = {
 const COMMENT_ICON_DIMENSION = 32;
 const COMMENT_INPUT_HEIGHT = 50;
 const COMMENT_INPUT_WIDTH = 150;
+const TTD_STORAGE_KEY = "drawboard-ttd-chats";
 
 export interface AppProps {
   appTitle: string;
-  useCustom: (api: ExcalidrawImperativeAPI | null, customArgs?: any[]) => void;
+  useCustom: (api: DrawboardImperativeAPI | null, customArgs?: any[]) => void;
   customArgs?: any[];
   children: React.ReactNode;
-  excalidrawLib: typeof TExcalidraw;
+  drawboardLib: typeof TDrawboard;
 }
 
 export default function ExampleApp({
@@ -77,8 +83,20 @@ export default function ExampleApp({
   useCustom,
   customArgs,
   children,
-  excalidrawLib,
+  drawboardLib,
 }: AppProps) {
+  const ttdPersistenceAdapter: TTDPersistenceAdapter = {
+    loadChats: async () => {
+      const stored = localStorage.getItem(TTD_STORAGE_KEY);
+      if (!stored) {
+        return [];
+      }
+      return JSON.parse(stored) as SavedChats;
+    },
+    saveChats: async (chats) => {
+      localStorage.setItem(TTD_STORAGE_KEY, JSON.stringify(chats));
+    },
+  };
   const {
     exportToCanvas,
     exportToSvg,
@@ -94,12 +112,12 @@ export default function ExampleApp({
     WelcomeScreen,
     MainMenu,
     LiveCollaborationTrigger,
-    convertToExcalidrawElements,
+    convertToDrawboardElements,
     TTDDialog,
     TTDDialogTrigger,
     ROUNDNESS,
     loadSceneOrLibraryFromBlob,
-  } = excalidrawLib;
+  } = drawboardLib;
   const appRef = useRef<any>(null);
   const [viewModeEnabled, setViewModeEnabled] = useState(false);
   const [zenModeEnabled, setZenModeEnabled] = useState(false);
@@ -118,22 +136,22 @@ export default function ExampleApp({
   const [comment, setComment] = useState<Comment | null>(null);
 
   const initialStatePromiseRef = useRef<{
-    promise: ResolvablePromise<ExcalidrawInitialDataState | null>;
+    promise: ResolvablePromise<DrawboardInitialDataState | null>;
   }>({ promise: null! });
   if (!initialStatePromiseRef.current.promise) {
     initialStatePromiseRef.current.promise =
-      resolvablePromise<ExcalidrawInitialDataState | null>();
+      resolvablePromise<DrawboardInitialDataState | null>();
   }
 
-  const [excalidrawAPI, setExcalidrawAPI] =
-    useState<ExcalidrawImperativeAPI | null>(null);
+  const [drawboardAPI, setDrawboardAPI] =
+    useState<DrawboardImperativeAPI | null>(null);
 
-  useCustom(excalidrawAPI, customArgs);
+  useCustom(drawboardAPI, customArgs);
 
-  useHandleLibrary({ excalidrawAPI });
+  useHandleLibrary({ drawboardAPI });
 
   useEffect(() => {
-    if (!excalidrawAPI) {
+    if (!drawboardAPI) {
       return;
     }
     const fetchData = async () => {
@@ -156,34 +174,31 @@ export default function ExampleApp({
         //@ts-ignore
         initialStatePromiseRef.current.promise.resolve({
           ...initialData,
-          elements: convertToExcalidrawElements(initialData.elements),
+          elements: convertToDrawboardElements(initialData.elements),
         });
-        excalidrawAPI.addFiles(imagesArray);
+        drawboardAPI.addFiles(imagesArray);
       };
     };
     fetchData();
-  }, [excalidrawAPI, convertToExcalidrawElements, MIME_TYPES]);
+  }, [drawboardAPI, convertToDrawboardElements, MIME_TYPES]);
 
-  const renderExcalidraw = (children: React.ReactNode) => {
-    const Excalidraw: any = Children.toArray(children).find(
+  const renderDrawboard = (children: React.ReactNode) => {
+    const Drawboard: any = Children.toArray(children).find(
       (child) =>
         React.isValidElement(child) &&
         typeof child.type !== "string" &&
         //@ts-ignore
-        child.type.displayName === "Excalidraw",
+        child.type.displayName === "Drawboard",
     );
-    if (!Excalidraw) {
+    if (!Drawboard) {
       return;
     }
     const newElement = cloneElement(
-      Excalidraw,
+      Drawboard,
       {
-        excalidrawAPI: (api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api),
+        drawboardAPI: (api: DrawboardImperativeAPI) => setDrawboardAPI(api),
         initialData: initialStatePromiseRef.current.promise,
-        onChange: (
-          elements: NonDeletedExcalidrawElement[],
-          state: AppState,
-        ) => {
+        onChange: (elements: NonDeletedDrawboardElement[], state: AppState) => {
           console.info("Elements :", elements, "State : ", state);
         },
         onPointerUpdate: (payload: {
@@ -210,11 +225,11 @@ export default function ExampleApp({
         validateEmbeddable: true,
       },
       <>
-        {excalidrawAPI && (
+        {drawboardAPI && (
           <Footer>
             <CustomFooter
-              excalidrawAPI={excalidrawAPI}
-              excalidrawLib={excalidrawLib}
+              drawboardAPI={drawboardAPI}
+              drawboardLib={drawboardLib}
             />
           </Footer>
         )}
@@ -244,7 +259,7 @@ export default function ExampleApp({
           Toggle Custom Sidebar
         </Sidebar.Trigger>
         {renderMenu()}
-        {excalidrawAPI && (
+        {drawboardAPI && (
           <TTDDialogTrigger icon={<span>😀</span>}>
             Text to diagram
           </TTDDialogTrigger>
@@ -257,6 +272,7 @@ export default function ExampleApp({
             throw new Error("error, go away now");
             // return "dummy";
           }}
+          persistenceAdapter={ttdPersistenceAdapter}
         />
       </>,
     );
@@ -284,12 +300,12 @@ export default function ExampleApp({
   };
 
   const loadSceneOrLibrary = async () => {
-    const file = await fileOpen({ description: "Excalidraw or library file" });
+    const file = await fileOpen({ description: "Drawboard or library file" });
     const contents = await loadSceneOrLibraryFromBlob(file, null, null);
-    if (contents.type === MIME_TYPES.excalidraw) {
-      excalidrawAPI?.updateScene(contents.data as any);
-    } else if (contents.type === MIME_TYPES.excalidrawlib) {
-      excalidrawAPI?.updateLibrary({
+    if (contents.type === MIME_TYPES.drawboard) {
+      drawboardAPI?.updateScene(contents.data as any);
+    } else if (contents.type === MIME_TYPES.drawboardlib) {
+      drawboardAPI?.updateLibrary({
         libraryItems: (contents.data as ImportedLibraryData).libraryItems!,
         openLibraryMenu: true,
       });
@@ -299,7 +315,7 @@ export default function ExampleApp({
   const updateScene = () => {
     const sceneData = {
       elements: restoreElements(
-        convertToExcalidrawElements([
+        convertToDrawboardElements([
           {
             type: "rectangle",
             id: "rect-1",
@@ -307,7 +323,7 @@ export default function ExampleApp({
             strokeWidth: 1,
             strokeStyle: "solid",
             roughness: 1,
-            angle: 0,
+            angle: 0 as Radians,
             x: 100.50390625,
             y: 93.67578125,
             strokeColor: "#c92a2a",
@@ -339,12 +355,12 @@ export default function ExampleApp({
         viewBackgroundColor: "#edf2ff",
       },
     };
-    excalidrawAPI?.updateScene(sceneData);
+    drawboardAPI?.updateScene(sceneData);
   };
 
   const onLinkOpen = useCallback(
     (
-      element: NonDeletedExcalidrawElement,
+      element: NonDeletedDrawboardElement,
       event: CustomEvent<{
         nativeEvent: MouseEvent | React.PointerEvent<HTMLCanvasElement>;
       }>,
@@ -366,13 +382,13 @@ export default function ExampleApp({
   );
 
   const onCopy = async (type: "png" | "svg" | "json") => {
-    if (!excalidrawAPI) {
+    if (!drawboardAPI) {
       return false;
     }
     await exportToClipboard({
-      elements: excalidrawAPI.getSceneElements(),
-      appState: excalidrawAPI.getAppState(),
-      files: excalidrawAPI.getFiles(),
+      elements: drawboardAPI.getSceneElements(),
+      appState: drawboardAPI.getAppState(),
+      files: drawboardAPI.getFiles(),
       type,
     });
     window.alert(`Copied to clipboard as ${type} successfully`);
@@ -386,7 +402,7 @@ export default function ExampleApp({
 
   const onPointerDown = (
     activeTool: AppState["activeTool"],
-    pointerDownState: ExcalidrawPointerDownState,
+    pointerDownState: DrawboardPointerDownState,
   ) => {
     if (activeTool.type === "custom" && activeTool.customType === "comment") {
       const { x, y } = pointerDownState.origin;
@@ -395,7 +411,7 @@ export default function ExampleApp({
   };
 
   const rerenderCommentIcons = () => {
-    if (!excalidrawAPI) {
+    if (!drawboardAPI) {
       return false;
     }
     const commentIconsElements = appRef.current.querySelectorAll(
@@ -403,7 +419,7 @@ export default function ExampleApp({
     ) as HTMLElement[];
     commentIconsElements.forEach((ele) => {
       const id = ele.id;
-      const appstate = excalidrawAPI.getAppState();
+      const appstate = drawboardAPI.getAppState();
       const { x, y } = sceneCoordsToViewportCoords(
         { sceneX: commentIcons[id].x, sceneY: commentIcons[id].y },
         appstate,
@@ -421,7 +437,7 @@ export default function ExampleApp({
     pointerDownState: PointerDownState,
   ) => {
     return withBatchedUpdatesThrottled((event) => {
-      if (!excalidrawAPI) {
+      if (!drawboardAPI) {
         return false;
       }
       const { x, y } = viewportCoordsToSceneCoords(
@@ -429,7 +445,7 @@ export default function ExampleApp({
           clientX: event.clientX - pointerDownState.hitElementOffsets.x,
           clientY: event.clientY - pointerDownState.hitElementOffsets.y,
         },
-        excalidrawAPI.getAppState(),
+        drawboardAPI.getAppState(),
       );
       setCommentIcons({
         ...commentIcons,
@@ -447,7 +463,7 @@ export default function ExampleApp({
     return withBatchedUpdates((event) => {
       window.removeEventListener("pointermove", pointerDownState.onMove);
       window.removeEventListener("pointerup", pointerDownState.onUp);
-      excalidrawAPI?.setActiveTool({ type: "selection" });
+      drawboardAPI?.setActiveTool({ type: "selection" });
       const distance = distance2d(
         pointerDownState.x,
         pointerDownState.y,
@@ -471,13 +487,13 @@ export default function ExampleApp({
 
   const renderCommentIcons = () => {
     return Object.values(commentIcons).map((commentIcon) => {
-      if (!excalidrawAPI) {
+      if (!drawboardAPI) {
         return false;
       }
-      const appState = excalidrawAPI.getAppState();
+      const appState = drawboardAPI.getAppState();
       const { x, y } = sceneCoordsToViewportCoords(
         { sceneX: commentIcon.x, sceneY: commentIcon.y },
-        excalidrawAPI.getAppState(),
+        drawboardAPI.getAppState(),
       );
       return (
         <div
@@ -516,7 +532,7 @@ export default function ExampleApp({
             pointerDownState.onMove = onPointerMove;
             pointerDownState.onUp = onPointerUp;
 
-            excalidrawAPI?.setActiveTool({
+            drawboardAPI?.setActiveTool({
               type: "custom",
               customType: "comment",
             });
@@ -555,7 +571,7 @@ export default function ExampleApp({
     if (!comment) {
       return null;
     }
-    const appState = excalidrawAPI?.getAppState()!;
+    const appState = drawboardAPI?.getAppState()!;
     const { x, y } = sceneCoordsToViewportCoords(
       { sceneX: comment.x, sceneY: comment.y },
       appState,
@@ -622,7 +638,7 @@ export default function ExampleApp({
           isCollaborating={isCollaborating}
           onSelect={() => window.alert("You clicked on collab button")}
         />
-        <MainMenu.Group title="Excalidraw links">
+        <MainMenu.Group title="Drawboard links">
           <MainMenu.DefaultItems.Socials />
         </MainMenu.Group>
         <MainMenu.Separator />
@@ -636,10 +652,10 @@ export default function ExampleApp({
         </MainMenu.ItemCustom>
         <MainMenu.DefaultItems.Help />
 
-        {excalidrawAPI && (
+        {drawboardAPI && (
           <MobileFooter
-            excalidrawLib={excalidrawLib}
-            excalidrawAPI={excalidrawAPI}
+            drawboardLib={drawboardLib}
+            drawboardAPI={drawboardAPI}
           />
         )}
       </MainMenu>
@@ -659,7 +675,7 @@ export default function ExampleApp({
           <button
             className="reset-scene"
             onClick={() => {
-              excalidrawAPI?.resetScene();
+              drawboardAPI?.resetScene();
             }}
           >
             Reset Scene
@@ -680,7 +696,7 @@ export default function ExampleApp({
                   elements: initialData.libraryItems[1] as any,
                 },
               ];
-              excalidrawAPI?.updateLibrary({
+              drawboardAPI?.updateLibrary({
                 libraryItems,
               });
             }}
@@ -763,9 +779,9 @@ export default function ExampleApp({
                     username: "fallback",
                     avatarUrl: "https://example.com",
                   });
-                  excalidrawAPI?.updateScene({ collaborators });
+                  drawboardAPI?.updateScene({ collaborators });
                 } else {
-                  excalidrawAPI?.updateScene({
+                  drawboardAPI?.updateScene({
                     collaborators: new Map(),
                   });
                 }
@@ -797,8 +813,8 @@ export default function ExampleApp({
             <div>y: {pointerData?.pointer.y ?? 0}</div>
           </div>
         </div>
-        <div className="excalidraw-wrapper">
-          {renderExcalidraw(children)}
+        <div className="drawboard-wrapper">
+          {renderDrawboard(children)}
           {Object.keys(commentIcons || []).length > 0 && renderCommentIcons()}
           {comment && renderComment()}
         </div>
@@ -822,11 +838,11 @@ export default function ExampleApp({
           </label>
           <button
             onClick={async () => {
-              if (!excalidrawAPI) {
+              if (!drawboardAPI) {
                 return;
               }
               const svg = await exportToSvg({
-                elements: excalidrawAPI?.getSceneElements(),
+                elements: drawboardAPI?.getSceneElements(),
                 appState: {
                   ...initialData.appState,
                   exportWithDarkMode,
@@ -834,7 +850,7 @@ export default function ExampleApp({
                   width: 300,
                   height: 100,
                 },
-                files: excalidrawAPI?.getFiles(),
+                files: drawboardAPI?.getFiles(),
               });
               appRef.current.querySelector(".export-svg").innerHTML =
                 svg.outerHTML;
@@ -846,18 +862,18 @@ export default function ExampleApp({
 
           <button
             onClick={async () => {
-              if (!excalidrawAPI) {
+              if (!drawboardAPI) {
                 return;
               }
               const blob = await exportToBlob({
-                elements: excalidrawAPI?.getSceneElements(),
+                elements: drawboardAPI?.getSceneElements(),
                 mimeType: "image/png",
                 appState: {
                   ...initialData.appState,
                   exportEmbedScene,
                   exportWithDarkMode,
                 },
-                files: excalidrawAPI?.getFiles(),
+                files: drawboardAPI?.getFiles(),
               });
               setBlobUrl(window.URL.createObjectURL(blob));
             }}
@@ -869,16 +885,16 @@ export default function ExampleApp({
           </div>
           <button
             onClick={async () => {
-              if (!excalidrawAPI) {
+              if (!drawboardAPI) {
                 return;
               }
               const canvas = await exportToCanvas({
-                elements: excalidrawAPI.getSceneElements(),
+                elements: drawboardAPI.getSceneElements(),
                 appState: {
                   ...initialData.appState,
                   exportWithDarkMode,
                 },
-                files: excalidrawAPI.getFiles(),
+                files: drawboardAPI.getFiles(),
               });
               const ctx = canvas.getContext("2d")!;
               ctx.font = "30px Excalifont";
@@ -890,16 +906,16 @@ export default function ExampleApp({
           </button>
           <button
             onClick={async () => {
-              if (!excalidrawAPI) {
+              if (!drawboardAPI) {
                 return;
               }
               const canvas = await exportToCanvas({
-                elements: excalidrawAPI.getSceneElements(),
+                elements: drawboardAPI.getSceneElements(),
                 appState: {
                   ...initialData.appState,
                   exportWithDarkMode,
                 },
-                files: excalidrawAPI.getFiles(),
+                files: drawboardAPI.getFiles(),
               });
               const ctx = canvas.getContext("2d")!;
               ctx.font = "30px Excalifont";
@@ -912,12 +928,12 @@ export default function ExampleApp({
           <button
             type="button"
             onClick={() => {
-              if (!excalidrawAPI) {
+              if (!drawboardAPI) {
                 return;
               }
 
-              const elements = excalidrawAPI.getSceneElements();
-              excalidrawAPI.scrollToContent(elements[0], {
+              const elements = drawboardAPI.getSceneElements();
+              drawboardAPI.scrollToContent(elements[0], {
                 fitToViewport: true,
               });
             }}
@@ -927,16 +943,16 @@ export default function ExampleApp({
           <button
             type="button"
             onClick={() => {
-              if (!excalidrawAPI) {
+              if (!drawboardAPI) {
                 return;
               }
 
-              const elements = excalidrawAPI.getSceneElements();
-              excalidrawAPI.scrollToContent(elements[0], {
+              const elements = drawboardAPI.getSceneElements();
+              drawboardAPI.scrollToContent(elements[0], {
                 fitToContent: true,
               });
 
-              excalidrawAPI.scrollToContent(elements[0], {
+              drawboardAPI.scrollToContent(elements[0], {
                 fitToContent: true,
               });
             }}
@@ -946,16 +962,16 @@ export default function ExampleApp({
           <button
             type="button"
             onClick={() => {
-              if (!excalidrawAPI) {
+              if (!drawboardAPI) {
                 return;
               }
 
-              const elements = excalidrawAPI.getSceneElements();
-              excalidrawAPI.scrollToContent(elements[0], {
+              const elements = drawboardAPI.getSceneElements();
+              drawboardAPI.scrollToContent(elements[0], {
                 fitToContent: true,
               });
 
-              excalidrawAPI.scrollToContent(elements[0]);
+              drawboardAPI.scrollToContent(elements[0]);
             }}
           >
             Scroll to first element, no fitToContent, no fitToViewport

@@ -1,19 +1,19 @@
-# @excalidraw/math
+# @drawboard/math
 
 ## Install
 
 ```bash
-npm install @excalidraw/math
+npm install @drawboard/math
 ```
 
-If you prefer Yarn over npm, use this command to install the Excalidraw utils package:
+If you prefer Yarn over npm, use this command to install the Drawboard utils package:
 
 ```bash
-yarn add @excalidraw/math
+yarn add @drawboard/math
 ```
 
 With PNPM, similarly install the package with this command:
 
 ```bash
-pnpm add @excalidraw/math
+pnpm add @drawboard/math
 ```

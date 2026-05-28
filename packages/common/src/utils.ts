@@ -1,14 +1,4 @@
-import { average } from "@excalidraw/math";
-
-import type { FontFamilyValues, FontString } from "@excalidraw/element/types";
-
-import type {
-  ActiveTool,
-  AppState,
-  ToolType,
-  UnsubscribeCallback,
-  Zoom,
-} from "@excalidraw/excalidraw/types";
+import { average } from "@drawboard/math";
 
 import {
   DEFAULT_VERSION,
@@ -17,6 +7,16 @@ import {
   getFontFamilyFallbacks,
   WINDOWS_EMOJI_FALLBACK_FONT,
 } from "./constants";
+
+import type { FontFamilyValues, FontString } from "@drawboard/element/types";
+
+import type {
+  ActiveTool,
+  AppState,
+  ToolType,
+  UnsubscribeCallback,
+  Zoom,
+} from "@drawboard/drawboard/types";
 
 import type { MaybePromise, ResolutionType } from "./utility-types";
 
@@ -477,7 +477,7 @@ const RE_RTL_CHECK = new RegExp(`^[^${RS_LTR_CHARS}]*[${RS_RTL_CHARS}]`);
  * Checks whether first directional character is RTL. Meaning whether it starts
  *  with RTL characters, or indeterminate (numbers etc.) characters followed by
  *  RTL.
- * See https://github.com/excalidraw/excalidraw/pull/1722#discussion_r436340171
+ * See https://github.com/drawboard/drawboard/pull/1722#discussion_r436340171
  */
 export const isRTL = (text: string) => RE_RTL_CHECK.test(text);
 
@@ -1291,7 +1291,7 @@ type FEATURE_FLAGS = {
   COMPLEX_BINDINGS: boolean;
 };
 
-const FEATURE_FLAGS_STORAGE_KEY = "excalidraw-feature-flags";
+const FEATURE_FLAGS_STORAGE_KEY = "drawboard-feature-flags";
 const DEFAULT_FEATURE_FLAGS: FEATURE_FLAGS = {
   COMPLEX_BINDINGS: false,
 };

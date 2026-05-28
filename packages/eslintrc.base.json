@@ -8,8 +8,8 @@
           {
             "patterns": [
               {
-                "group": ["../../excalidraw", "../../../packages/excalidraw", "@excalidraw/excalidraw"],
-                "message": "Do not import from '@excalidraw/excalidraw' package anything but types, as this package must be independent.",
+                "group": ["../../drawboard", "../../../packages/drawboard", "@drawboard/drawboard"],
+                "message": "Do not import from '@drawboard/drawboard' package anything but types, as this package must be independent.",
                 "allowTypeImports": true
               }
             ]

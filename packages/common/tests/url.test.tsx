@@ -14,10 +14,10 @@ describe("normalizeLink", () => {
     expect(normalizeLink("ola")).toBe("ola");
     expect(normalizeLink(" ola")).toBe("ola");
 
-    expect(normalizeLink("https://www.excalidraw.com")).toBe(
-      "https://www.excalidraw.com",
+    expect(normalizeLink("https://www.drawboard.com")).toBe(
+      "https://www.drawboard.com",
     );
-    expect(normalizeLink("www.excalidraw.com")).toBe("www.excalidraw.com");
+    expect(normalizeLink("www.drawboard.com")).toBe("www.drawboard.com");
     expect(normalizeLink("/ola")).toBe("/ola");
     expect(normalizeLink("http://test")).toBe("http://test");
     expect(normalizeLink("ftp://test")).toBe("ftp://test");

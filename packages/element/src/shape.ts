@@ -8,14 +8,14 @@ import {
   getEllipseShape,
   getFreedrawShape,
   getPolygonShape,
-} from "@excalidraw/utils/shape";
+} from "@drawboard/utils/shape";
 
 import {
   pointFrom,
   pointDistance,
   type LocalPoint,
   pointRotateRads,
-} from "@excalidraw/math";
+} from "@drawboard/math";
 import {
   ROUGHNESS,
   THEME,
@@ -24,23 +24,9 @@ import {
   COLOR_PALETTE,
   LINE_POLYGON_POINT_MERGE_DISTANCE,
   applyDarkModeFilter,
-} from "@excalidraw/common";
+} from "@drawboard/common";
 
 import { RoughGenerator } from "roughjs/bin/generator";
-
-import type { GlobalPoint } from "@excalidraw/math";
-
-import type { Mutable } from "@excalidraw/common/utility-types";
-
-import type {
-  AppState,
-  EmbedsValidationStatus,
-} from "@excalidraw/excalidraw/types";
-import type {
-  ElementShape,
-  ElementShapes,
-  SVGPathString,
-} from "@excalidraw/excalidraw/scene/types";
 
 import { elementWithCanvasCache } from "./renderElement";
 
@@ -65,14 +51,27 @@ import {
 import { shouldTestInside } from "./collision";
 
 import type {
-  ExcalidrawElement,
-  NonDeletedExcalidrawElement,
-  ExcalidrawSelectionElement,
-  ExcalidrawLinearElement,
+  ElementShape,
+  ElementShapes,
+  SVGPathString,
+} from "@drawboard/drawboard/scene/types";
+
+import type { Mutable } from "@drawboard/common/utility-types";
+import type {
+  AppState,
+  EmbedsValidationStatus,
+} from "@drawboard/drawboard/types";
+import type { GlobalPoint } from "@drawboard/math";
+
+import type {
+  DrawboardElement,
+  NonDeletedDrawboardElement,
+  DrawboardSelectionElement,
+  DrawboardLinearElement,
   Arrowhead,
-  ExcalidrawFreeDrawElement,
+  DrawboardFreeDrawElement,
   ElementsMap,
-  ExcalidrawLineElement,
+  DrawboardLineElement,
 } from "./types";
 
 import type { Drawable, Options } from "roughjs/bin/core";
@@ -81,7 +80,7 @@ import type { Point as RoughPoint } from "roughjs/bin/geometry";
 export class ShapeCache {
   private static rg = new RoughGenerator();
   private static cache = new WeakMap<
-    ExcalidrawElement,
+    DrawboardElement,
     { shape: ElementShape; theme: AppState["theme"] }
   >();
 
@@ -89,7 +88,7 @@ export class ShapeCache {
    * Retrieves shape from cache if available. Use this only if shape
    * is optional and you have a fallback in case it's not cached.
    */
-  public static get = <T extends ExcalidrawElement>(
+  public static get = <T extends DrawboardElement>(
     element: T,
     theme: AppState["theme"] | null,
   ) => {
@@ -102,7 +101,7 @@ export class ShapeCache {
     return undefined;
   };
 
-  public static delete = (element: ExcalidrawElement) => {
+  public static delete = (element: DrawboardElement) => {
     ShapeCache.cache.delete(element);
     elementWithCanvasCache.delete(element);
   };
@@ -116,7 +115,7 @@ export class ShapeCache {
    * returns cached shape.
    */
   public static generateElementShape = <
-    T extends Exclude<ExcalidrawElement, ExcalidrawSelectionElement>,
+    T extends Exclude<DrawboardElement, DrawboardSelectionElement>,
   >(
     element: T,
     renderConfig: {
@@ -167,7 +166,7 @@ const getDashArrayDashed = (strokeWidth: number) => [8, 8 + strokeWidth];
 
 const getDashArrayDotted = (strokeWidth: number) => [1.5, 6 + strokeWidth];
 
-function adjustRoughness(element: ExcalidrawElement): number {
+function adjustRoughness(element: DrawboardElement): number {
   const roughness = element.roughness;
 
   const maxSize = Math.max(element.width, element.height);
@@ -191,7 +190,7 @@ function adjustRoughness(element: ExcalidrawElement): number {
 }
 
 export const generateRoughOptions = (
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   continuousPath = false,
   isDarkMode: boolean = false,
 ): Options => {
@@ -264,7 +263,7 @@ export const generateRoughOptions = (
 };
 
 const modifyIframeLikeForRoughOptions = (
-  element: NonDeletedExcalidrawElement,
+  element: NonDeletedDrawboardElement,
   isExporting: boolean,
   embedsValidationStatus: EmbedsValidationStatus | null,
 ) => {
@@ -297,7 +296,7 @@ const modifyIframeLikeForRoughOptions = (
 };
 
 const getArrowheadShapes = (
-  element: ExcalidrawLinearElement,
+  element: DrawboardLinearElement,
   shape: Drawable[],
   position: "start" | "end",
   arrowhead: Arrowhead,
@@ -445,7 +444,7 @@ const getArrowheadShapes = (
 };
 
 export const generateLinearCollisionShape = (
-  element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement,
+  element: DrawboardLinearElement | DrawboardFreeDrawElement,
 ) => {
   const generator = new RoughGenerator();
   const options: Options = {
@@ -628,7 +627,7 @@ export const generateLinearCollisionShape = (
  * @private
  */
 const _generateElementShape = (
-  element: Exclude<NonDeletedExcalidrawElement, ExcalidrawSelectionElement>,
+  element: Exclude<NonDeletedDrawboardElement, DrawboardSelectionElement>,
   generator: RoughGenerator,
   {
     isExporting,
@@ -942,11 +941,11 @@ const generateElbowArrowShape = (
 };
 
 /**
- * get the pure geometric shape of an excalidraw elementw
+ * get the pure geometric shape of an drawboard elementw
  * which is then used for hit detection
  */
 export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
 ): GeometricShape<Point> => {
   switch (element.type) {
@@ -996,11 +995,11 @@ export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
 };
 
 export const toggleLinePolygonState = (
-  element: ExcalidrawLineElement,
+  element: DrawboardLineElement,
   nextPolygonState: boolean,
 ): {
-  polygon: ExcalidrawLineElement["polygon"];
-  points: ExcalidrawLineElement["points"];
+  polygon: DrawboardLineElement["polygon"];
+  points: DrawboardLineElement["points"];
 } | null => {
   const updatedPoints = [...element.points];
 
@@ -1030,7 +1029,7 @@ export const toggleLinePolygonState = (
     }
   }
 
-  // TODO: satisfies ElementUpdate<ExcalidrawLineElement>
+  // TODO: satisfies ElementUpdate<DrawboardLineElement>
   const ret = {
     polygon: nextPolygonState,
     points: updatedPoints,
@@ -1044,15 +1043,13 @@ export const toggleLinePolygonState = (
 // -----------------------------------------------------------------------------
 
 // NOTE not cached (-> for SVG export)
-const getFreeDrawSvgPath = (element: ExcalidrawFreeDrawElement) => {
+const getFreeDrawSvgPath = (element: DrawboardFreeDrawElement) => {
   return getSvgPathFromStroke(
     getFreedrawOutlinePoints(element),
   ) as SVGPathString;
 };
 
-export const getFreedrawOutlinePoints = (
-  element: ExcalidrawFreeDrawElement,
-) => {
+export const getFreedrawOutlinePoints = (element: DrawboardFreeDrawElement) => {
   // If input points are empty (should they ever be?) return a dot
   const inputPoints = element.simulatePressure
     ? element.points

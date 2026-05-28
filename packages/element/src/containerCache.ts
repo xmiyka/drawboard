@@ -1,16 +1,16 @@
-import type { ExcalidrawTextContainer } from "./types";
+import type { DrawboardTextContainer } from "./types";
 
 export const originalContainerCache: {
-  [id: ExcalidrawTextContainer["id"]]:
+  [id: DrawboardTextContainer["id"]]:
     | {
-        height: ExcalidrawTextContainer["height"];
+        height: DrawboardTextContainer["height"];
       }
     | undefined;
 } = {};
 
 export const updateOriginalContainerCache = (
-  id: ExcalidrawTextContainer["id"],
-  height: ExcalidrawTextContainer["height"],
+  id: DrawboardTextContainer["id"],
+  height: DrawboardTextContainer["height"],
 ) => {
   const data =
     originalContainerCache[id] || (originalContainerCache[id] = { height });
@@ -19,7 +19,7 @@ export const updateOriginalContainerCache = (
 };
 
 export const resetOriginalContainerCache = (
-  id: ExcalidrawTextContainer["id"],
+  id: DrawboardTextContainer["id"],
 ) => {
   if (originalContainerCache[id]) {
     delete originalContainerCache[id];
@@ -27,7 +27,7 @@ export const resetOriginalContainerCache = (
 };
 
 export const getOriginalContainerHeightFromCache = (
-  id: ExcalidrawTextContainer["id"],
+  id: DrawboardTextContainer["id"],
 ) => {
   return originalContainerCache[id]?.height ?? null;
 };

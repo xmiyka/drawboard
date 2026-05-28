@@ -1,7 +1,7 @@
-import { getLineHeight } from "@excalidraw/common";
-import { API } from "@excalidraw/excalidraw/tests/helpers/api";
+import { getLineHeight } from "@drawboard/common";
+import { API } from "@drawboard/drawboard/tests/helpers/api";
 
-import { FONT_FAMILY, TEXT_ALIGN, VERTICAL_ALIGN } from "@excalidraw/common";
+import { FONT_FAMILY, TEXT_ALIGN, VERTICAL_ALIGN } from "@drawboard/common";
 
 import {
   computeContainerDimensionForBoundText,
@@ -12,7 +12,7 @@ import {
 } from "../src/textElement";
 import { detectLineHeight, getLineHeightInPx } from "../src/textMeasurements";
 
-import type { ExcalidrawTextElementWithContainer } from "../src/types";
+import type { DrawboardTextElementWithContainer } from "../src/types";
 
 describe("Test measureText", () => {
   describe("Test getContainerCoords", () => {
@@ -127,11 +127,11 @@ describe("Test measureText", () => {
       height: 175,
       fontSize: 20,
       fontFamily: 1,
-      text: "Excalidraw is a\nvirtual \nopensource \nwhiteboard for \nsketching \nhand-drawn like\ndiagrams",
+      text: "Drawboard is a\nvirtual \nopensource \nwhiteboard for \nsketching \nhand-drawn like\ndiagrams",
       textAlign: "center",
       verticalAlign: "middle",
       containerId: params.id,
-    }) as ExcalidrawTextElementWithContainer;
+    }) as DrawboardTextElementWithContainer;
 
     it("should return max height when container is rectangle", () => {
       const container = API.createElement({ type: "rectangle", ...params });
@@ -173,7 +173,7 @@ describe("Test measureText", () => {
 
 const textElement = API.createElement({
   type: "text",
-  text: "Excalidraw is a\nvirtual \nopensource \nwhiteboard for \nsketching \nhand-drawn like\ndiagrams",
+  text: "Drawboard is a\nvirtual \nopensource \nwhiteboard for \nsketching \nhand-drawn like\ndiagrams",
   fontSize: 20,
   fontFamily: 1,
   height: 175,
@@ -234,7 +234,7 @@ describe("Test computeBoundTextPosition", () => {
       textAlign: textAlign as any,
       verticalAlign: verticalAlign as any,
       containerId: container.id,
-    }) as ExcalidrawTextElementWithContainer;
+    }) as DrawboardTextElementWithContainer;
 
     const elementsMap = createMockElementsMap();
 

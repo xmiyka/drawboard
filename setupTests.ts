@@ -5,9 +5,9 @@ import "vitest-canvas-mock";
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
-import polyfill from "./packages/excalidraw/polyfill";
-import { yellow } from "./packages/excalidraw/tests/helpers/colorize";
-import { testPolyfills } from "./packages/excalidraw/tests/helpers/polyfills";
+import polyfill from "./packages/drawboard/polyfill";
+import { yellow } from "./packages/drawboard/tests/helpers/colorize";
+import { testPolyfills } from "./packages/drawboard/tests/helpers/polyfills";
 
 // mock for pep.js not working with setPointerCapture()
 HTMLElement.prototype.setPointerCapture = vi.fn();
@@ -64,16 +64,16 @@ Object.defineProperty(document, "fonts", {
   },
 });
 
-Object.defineProperty(window, "EXCALIDRAW_ASSET_PATH", {
+Object.defineProperty(window, "DRAWBOARD_ASSET_PATH", {
   value: `file://${__dirname}/`,
 });
 
 // mock the font fetch only, so that everything else, as font subsetting, can run inside of the (snapshot) tests
 vi.mock(
-  "./packages/excalidraw/fonts/ExcalidrawFontFace",
+  "./packages/drawboard/fonts/ExcalidrawFontFace",
   async (importOriginal) => {
     const mod = await importOriginal<
-      typeof import("./packages/excalidraw/fonts/ExcalidrawFontFace")
+      typeof import("./packages/drawboard/fonts/ExcalidrawFontFace")
     >();
     const ExcalidrawFontFaceImpl = mod.ExcalidrawFontFace;
 

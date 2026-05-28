@@ -1,13 +1,13 @@
-import type { AppState } from "@excalidraw/excalidraw/types";
-
 import { updateBoundElements } from "./binding";
 import { getCommonBoundingBox } from "./bounds";
 import { getSelectedElementsByGroup } from "./groups";
 
+import type { AppState } from "@drawboard/drawboard/types";
+
 import type { Scene } from "./Scene";
 
 import type { BoundingBox } from "./bounds";
-import type { ExcalidrawElement } from "./types";
+import type { DrawboardElement } from "./types";
 
 export interface Alignment {
   position: "start" | "center" | "end";
@@ -15,12 +15,12 @@ export interface Alignment {
 }
 
 export const alignElements = (
-  selectedElements: ExcalidrawElement[],
+  selectedElements: DrawboardElement[],
   alignment: Alignment,
   scene: Scene,
   appState: Readonly<AppState>,
-): ExcalidrawElement[] => {
-  const groups: ExcalidrawElement[][] = getSelectedElementsByGroup(
+): DrawboardElement[] => {
+  const groups: DrawboardElement[][] = getSelectedElementsByGroup(
     selectedElements,
     scene.getNonDeletedElementsMap(),
     appState,
@@ -50,7 +50,7 @@ export const alignElements = (
 };
 
 const calculateTranslation = (
-  group: ExcalidrawElement[],
+  group: DrawboardElement[],
   selectionBoundingBox: BoundingBox,
   { axis, position }: Alignment,
 ): { x: number; y: number } => {

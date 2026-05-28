@@ -1,7 +1,7 @@
-import type { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/data/transform";
-import type { FileId } from "@excalidraw/excalidraw/element/types";
+import type { DrawboardElementSkeleton } from "@drawboard/drawboard/data/transform";
+import type { FileId } from "@drawboard/drawboard/element/types";
 
-const elements: ExcalidrawElementSkeleton[] = [
+const elements: DrawboardElementSkeleton[] = [
   {
     type: "rectangle",
     x: 10,
@@ -16,7 +16,7 @@ const elements: ExcalidrawElementSkeleton[] = [
     backgroundColor: "#fff3bf",
     strokeWidth: 2,
     label: {
-      text: "HELLO EXCALIDRAW",
+      text: "HELLO DRAWBOARD",
       strokeColor: "#099268",
       fontSize: 30,
     },

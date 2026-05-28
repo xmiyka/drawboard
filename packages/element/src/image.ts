@@ -1,21 +1,21 @@
 // -----------------------------------------------------------------------------
-// ExcalidrawImageElement & related helpers
+// DrawboardImageElement & related helpers
 // -----------------------------------------------------------------------------
 
-import { MIME_TYPES, SVG_NS } from "@excalidraw/common";
+import { MIME_TYPES, SVG_NS } from "@drawboard/common";
+
+import { isInitializedImageElement } from "./typeChecks";
 
 import type {
   AppClassProperties,
   DataURL,
   BinaryFiles,
-} from "@excalidraw/excalidraw/types";
-
-import { isInitializedImageElement } from "./typeChecks";
+} from "@drawboard/drawboard/types";
 
 import type {
-  ExcalidrawElement,
+  DrawboardElement,
   FileId,
-  InitializedExcalidrawImageElement,
+  InitializedDrawboardImageElement,
 } from "./types";
 
 export const loadHTMLImageElement = (dataURL: DataURL) => {
@@ -89,11 +89,11 @@ export const updateImageCache = async ({
 };
 
 export const getInitializedImageElements = (
-  elements: readonly ExcalidrawElement[],
+  elements: readonly DrawboardElement[],
 ) =>
   elements.filter((element) =>
     isInitializedImageElement(element),
-  ) as InitializedExcalidrawImageElement[];
+  ) as InitializedDrawboardImageElement[];
 
 export const isHTMLSVGElement = (node: Node | null): node is SVGElement => {
   // lower-casing due to XML/HTML convention differences

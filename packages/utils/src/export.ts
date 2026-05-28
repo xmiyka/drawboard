@@ -1,36 +1,36 @@
-import { MIME_TYPES } from "@excalidraw/common";
-import { getDefaultAppState } from "@excalidraw/excalidraw/appState";
+import { MIME_TYPES } from "@drawboard/common";
+import { getDefaultAppState } from "@drawboard/drawboard/appState";
 import {
   copyBlobToClipboardAsPng,
   copyTextToSystemClipboard,
   copyToClipboard,
-} from "@excalidraw/excalidraw/clipboard";
-import { encodePngMetadata } from "@excalidraw/excalidraw/data/image";
-import { serializeAsJSON } from "@excalidraw/excalidraw/data/json";
+} from "@drawboard/drawboard/clipboard";
+import { encodePngMetadata } from "@drawboard/drawboard/data/image";
+import { serializeAsJSON } from "@drawboard/drawboard/data/json";
 import {
   restoreAppState,
   restoreElements,
-} from "@excalidraw/excalidraw/data/restore";
+} from "@drawboard/drawboard/data/restore";
 import {
   exportToCanvas as _exportToCanvas,
   exportToSvg as _exportToSvg,
-} from "@excalidraw/excalidraw/scene/export";
+} from "@drawboard/drawboard/scene/export";
 
 import type {
-  ExcalidrawElement,
-  ExcalidrawFrameLikeElement,
+  DrawboardElement,
+  DrawboardFrameLikeElement,
   NonDeleted,
-} from "@excalidraw/element/types";
-import type { AppState, BinaryFiles } from "@excalidraw/excalidraw/types";
+} from "@drawboard/element/types";
+import type { AppState, BinaryFiles } from "@drawboard/drawboard/types";
 
 export { MIME_TYPES };
 
 type ExportOpts = {
-  elements: readonly NonDeleted<ExcalidrawElement>[];
+  elements: readonly NonDeleted<DrawboardElement>[];
   appState?: Partial<Omit<AppState, "offsetTop" | "offsetLeft">>;
   files: BinaryFiles | null;
   maxWidthOrHeight?: number;
-  exportingFrame?: ExcalidrawFrameLikeElement | null;
+  exportingFrame?: DrawboardFrameLikeElement | null;
   getDimensions?: (
     width: number,
     height: number,

@@ -1,0 +1,16 @@
+[
+  {
+    "path": "dist/drawboard.production.min.js",
+    "limit": "340 kB"
+  },
+  {
+    "path": "dist/drawboard-assets/locales",
+    "name": "dist/drawboard-assets/locales",
+    "limit": "290 kB"
+  },
+  {
+    "path": "dist/drawboard-assets/vendor-*.js",
+    "name": "dist/drawboard-assets/vendor*.js",
+    "limit": "900 kB"
+  }
+]

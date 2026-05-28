@@ -10,9 +10,9 @@ import {
   curveLength,
   curvePointAtLength,
   lineSegment,
-} from "@excalidraw/math";
+} from "@drawboard/math";
 
-import { getCurvePathOps } from "@excalidraw/utils/shape";
+import { getCurvePathOps } from "@drawboard/utils/shape";
 
 import {
   DRAGGING_THRESHOLD,
@@ -22,7 +22,7 @@ import {
   invariant,
   isShallowEqual,
   getFeatureFlag,
-} from "@excalidraw/common";
+} from "@drawboard/common";
 
 import {
   deconstructLinearOrFreeDrawElement,
@@ -30,19 +30,7 @@ import {
   moveArrowAboveBindable,
   projectFixedPointOntoDiagonal,
   type Store,
-} from "@excalidraw/element";
-
-import type { Radians } from "@excalidraw/math";
-
-import type {
-  AppState,
-  PointerCoords,
-  InteractiveCanvasAppState,
-  AppClassProperties,
-  NullableGridSize,
-  Zoom,
-} from "@excalidraw/excalidraw/types";
-import type { Bounds } from "@excalidraw/common";
+} from "@drawboard/element";
 
 import {
   calculateFixedPointForNonElbowArrowBinding,
@@ -67,22 +55,33 @@ import { getLockedLinearCursorAlignSize } from "./sizeHelpers";
 
 import { isLineElement } from "./typeChecks";
 
+import type {
+  AppState,
+  PointerCoords,
+  InteractiveCanvasAppState,
+  AppClassProperties,
+  NullableGridSize,
+  Zoom,
+} from "@drawboard/drawboard/types";
+import type { Bounds } from "@drawboard/common";
+import type { Radians } from "@drawboard/math";
+
 import type { Scene } from "./Scene";
 
 import type {
   NonDeleted,
-  ExcalidrawLinearElement,
-  ExcalidrawElement,
-  ExcalidrawTextElementWithContainer,
+  DrawboardLinearElement,
+  DrawboardElement,
+  DrawboardTextElementWithContainer,
   ElementsMap,
   NonDeletedSceneElementsMap,
   FixedPointBinding,
   FixedSegment,
-  ExcalidrawElbowArrowElement,
+  DrawboardElbowArrowElement,
   PointsPositionUpdates,
-  NonDeletedExcalidrawElement,
+  NonDeletedDrawboardElement,
   Ordered,
-  ExcalidrawBindableElement,
+  DrawboardBindableElement,
 } from "./types";
 
 /**
@@ -96,7 +95,7 @@ import type {
 const getNormalizedPoints = ({
   points,
 }: {
-  points: ExcalidrawLinearElement["points"];
+  points: DrawboardLinearElement["points"];
 }): {
   points: LocalPoint[];
   offsetX: number;
@@ -122,8 +121,8 @@ type PointMoveOtherUpdates = {
 };
 
 export class LinearElementEditor {
-  public readonly elementId: ExcalidrawElement["id"] & {
-    _brand: "excalidrawLinearElementId";
+  public readonly elementId: DrawboardElement["id"] & {
+    _brand: "drawboardLinearElementId";
   };
   /** indices */
   public readonly selectedPointsIndices: readonly number[] | null;
@@ -159,12 +158,12 @@ export class LinearElementEditor {
   public readonly pointerDownState: never;
 
   constructor(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     elementsMap: ElementsMap,
     isEditing: boolean = false,
   ) {
     this.elementId = element.id as string & {
-      _brand: "excalidrawLinearElementId";
+      _brand: "drawboardLinearElementId";
     };
     if (!pointsEqual(element.points[0], pointFrom(0, 0))) {
       console.error("Linear element is not normalized", Error().stack);
@@ -207,9 +206,9 @@ export class LinearElementEditor {
 
   /**
    * @param id the `elementId` from the instance of this class (so that we can
-   *  statically guarantee this method returns an ExcalidrawLinearElement)
+   *  statically guarantee this method returns an DrawboardLinearElement)
    */
-  static getElement<T extends ExcalidrawLinearElement>(
+  static getElement<T extends DrawboardLinearElement>(
     id: InstanceType<typeof LinearElementEditor>["elementId"],
     elementsMap: ElementsMap,
   ): T | null {
@@ -395,7 +394,7 @@ export class LinearElementEditor {
       element.startBinding &&
       (elementsMap.get(
         element.startBinding.elementId,
-      ) as ExcalidrawBindableElement | null);
+      ) as DrawboardBindableElement | null);
     const newLinearElementEditor = {
       ...linearElementEditor,
       customLineAngle,
@@ -593,13 +592,13 @@ export class LinearElementEditor {
       element.startBinding &&
       (elementsMap.get(
         element.startBinding.elementId,
-      ) as ExcalidrawBindableElement | null);
+      ) as DrawboardBindableElement | null);
     const endBindingElement =
       isBindingElement(element) &&
       element.endBinding &&
       (elementsMap.get(
         element.endBinding.elementId,
-      ) as ExcalidrawBindableElement | null);
+      ) as DrawboardBindableElement | null);
     const altFocusPointBindableElement =
       endIsSelected && // The "other" end (i.e. "end") is dragged
       startBindingElement &&
@@ -735,7 +734,7 @@ export class LinearElementEditor {
   }
 
   static getEditorMidPoints = (
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     elementsMap: ElementsMap,
     appState: InteractiveCanvasAppState,
   ): (GlobalPoint | null)[] => {
@@ -857,7 +856,7 @@ export class LinearElementEditor {
   };
 
   static isSegmentTooShort<P extends GlobalPoint | LocalPoint>(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     startPoint: P,
     endPoint: P,
     index: number,
@@ -894,7 +893,7 @@ export class LinearElementEditor {
   }
 
   static getSegmentMidPoint(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     index: number,
   ): GlobalPoint {
     if (isElbowArrow(element)) {
@@ -970,7 +969,7 @@ export class LinearElementEditor {
     scene: Scene,
   ): {
     didAddPoint: boolean;
-    hitElement: NonDeleted<ExcalidrawElement> | null;
+    hitElement: NonDeleted<DrawboardElement> | null;
     linearElementEditor: LinearElementEditor | null;
   } {
     const appState = app.state;
@@ -1210,7 +1209,7 @@ export class LinearElementEditor {
 
   /** scene coords */
   static getPointGlobalCoordinates(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     p: LocalPoint,
     elementsMap: ElementsMap,
   ): GlobalPoint {
@@ -1228,7 +1227,7 @@ export class LinearElementEditor {
 
   /** scene coords */
   static getPointsGlobalCoordinates(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     elementsMap: ElementsMap,
   ): GlobalPoint[] {
     const [x1, y1, x2, y2] = getElementAbsoluteCoords(element, elementsMap);
@@ -1245,7 +1244,7 @@ export class LinearElementEditor {
   }
 
   static getPointAtIndexGlobalCoordinates(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     indexMaybeFromEnd: number, // -1 for last element
     elementsMap: ElementsMap,
   ): GlobalPoint {
@@ -1268,7 +1267,7 @@ export class LinearElementEditor {
   }
 
   static pointFromAbsoluteCoords(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     absoluteCoords: GlobalPoint,
     elementsMap: ElementsMap,
   ): LocalPoint {
@@ -1292,7 +1291,7 @@ export class LinearElementEditor {
   }
 
   static getPointIndexUnderCursor(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     elementsMap: ElementsMap,
     zoom: AppState["zoom"],
     x: number,
@@ -1320,7 +1319,7 @@ export class LinearElementEditor {
   }
 
   static createPointAt(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     elementsMap: ElementsMap,
     scenePointerX: number,
     scenePointerY: number,
@@ -1346,7 +1345,7 @@ export class LinearElementEditor {
    * Also returns normalized x and y coords to account for the normalization
    * of the points.
    */
-  static getNormalizeElementPointsAndCoords(element: ExcalidrawLinearElement) {
+  static getNormalizeElementPointsAndCoords(element: DrawboardLinearElement) {
     const { points, offsetX, offsetY } = getNormalizedPoints(element);
 
     return {
@@ -1435,7 +1434,7 @@ export class LinearElementEditor {
   }
 
   static deletePoints(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     app: AppClassProperties,
     pointIndices: readonly number[],
   ) {
@@ -1479,7 +1478,7 @@ export class LinearElementEditor {
   }
 
   static addPoints(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     scene: Scene,
     addedPoints: LocalPoint[],
   ) {
@@ -1508,7 +1507,7 @@ export class LinearElementEditor {
   }
 
   static movePoints(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     scene: Scene,
     pointUpdates: PointsPositionUpdates,
     otherUpdates?: {
@@ -1685,7 +1684,7 @@ export class LinearElementEditor {
   }
 
   private static _updatePoints(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     scene: Scene,
     nextPoints: readonly LocalPoint[],
     offsetX: number,
@@ -1744,7 +1743,7 @@ export class LinearElementEditor {
   }
 
   private static _getShiftLockedDelta(
-    element: NonDeleted<ExcalidrawLinearElement>,
+    element: NonDeleted<DrawboardLinearElement>,
     elementsMap: ElementsMap,
     referencePoint: LocalPoint,
     scenePointer: GlobalPoint,
@@ -1786,8 +1785,8 @@ export class LinearElementEditor {
   }
 
   static getBoundTextElementPosition = (
-    element: ExcalidrawLinearElement,
-    boundTextElement: ExcalidrawTextElementWithContainer,
+    element: DrawboardLinearElement,
+    boundTextElement: DrawboardTextElementWithContainer,
     elementsMap: ElementsMap,
   ): { x: number; y: number } => {
     const points = LinearElementEditor.getPointsGlobalCoordinates(
@@ -1822,10 +1821,10 @@ export class LinearElementEditor {
   };
 
   static getMinMaxXYWithBoundText = (
-    element: ExcalidrawLinearElement,
+    element: DrawboardLinearElement,
     elementsMap: ElementsMap,
     elementBounds: Bounds,
-    boundTextElement: ExcalidrawTextElementWithContainer,
+    boundTextElement: DrawboardTextElementWithContainer,
   ): [number, number, number, number, number, number] => {
     let [x1, y1, x2, y2] = elementBounds;
     const cx = (x1 + x2) / 2;
@@ -1926,7 +1925,7 @@ export class LinearElementEditor {
   };
 
   static getElementAbsoluteCoords = (
-    element: ExcalidrawLinearElement,
+    element: DrawboardLinearElement,
     elementsMap: ElementsMap,
     includeBoundText: boolean = false,
   ): [number, number, number, number, number, number] => {
@@ -2043,7 +2042,7 @@ export class LinearElementEditor {
   }
 
   static deleteFixedSegment(
-    element: ExcalidrawElbowArrowElement,
+    element: DrawboardElbowArrowElement,
     scene: Scene,
     index: number,
   ): void {
@@ -2072,8 +2071,8 @@ const pointDraggingUpdates = (
   scenePointerX: number,
   scenePointerY: number,
   elementsMap: NonDeletedSceneElementsMap,
-  element: NonDeleted<ExcalidrawLinearElement>,
-  elements: readonly Ordered<NonDeletedExcalidrawElement>[],
+  element: NonDeleted<DrawboardLinearElement>,
+  elements: readonly Ordered<NonDeletedDrawboardElement>[],
   app: AppClassProperties,
   angleLocked: boolean,
   altKey: boolean,
@@ -2264,7 +2263,7 @@ const pointDraggingUpdates = (
     ? end.element ??
       (elementsMap.get(
         nextArrow.endBinding.elementId,
-      )! as ExcalidrawBindableElement)
+      )! as DrawboardBindableElement)
     : null;
 
   const endLocalPoint = startIsDraggingOverEndElement
@@ -2294,7 +2293,7 @@ const pointDraggingUpdates = (
     ? start.element ??
       (elementsMap.get(
         nextArrow.startBinding.elementId,
-      )! as ExcalidrawBindableElement)
+      )! as DrawboardBindableElement)
     : null;
 
   const startLocalPoint =

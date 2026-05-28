@@ -1,56 +1,56 @@
-# @excalidraw/utils
+# @drawboard/utils
 
 ## Install
 
 ```bash
-npm install @excalidraw/utils
+npm install @drawboard/utils
 ```
 
-If you prefer Yarn over npm, use this command to install the Excalidraw utils package:
+If you prefer Yarn over npm, use this command to install the Drawboard utils package:
 
 ```bash
-yarn add @excalidraw/utils
+yarn add @drawboard/utils
 ```
 
 ## API
 
 ### `serializeAsJSON`
 
-See [`serializeAsJSON`](https://github.com/excalidraw/excalidraw/blob/master/src/packages/excalidraw/README.md#serializeAsJSON) for API and description.
+See [`serializeAsJSON`](https://github.com/drawboard/drawboard/blob/master/src/packages/drawboard/README.md#serializeAsJSON) for API and description.
 
 ### `exportToBlob` (async)
 
-Export an Excalidraw diagram to a [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob).
+Export an Drawboard diagram to a [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob).
 
 ### `exportToSvg`
 
-Export an Excalidraw diagram to a [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement).
+Export an Drawboard diagram to a [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement).
 
 ## Usage
 
-Excalidraw utils is published as a UMD (Universal Module Definition). If you are using a module bundler (for instance, Webpack), you can import it as an ES6 module:
+Drawboard utils is published as a UMD (Universal Module Definition). If you are using a module bundler (for instance, Webpack), you can import it as an ES6 module:
 
 ```js
-import { exportToSvg, exportToBlob } from "@excalidraw/utils";
+import { exportToSvg, exportToBlob } from "@drawboard/utils";
 ```
 
 To use it in a browser directly:
 
 ```html
-<script src="https://unpkg.com/@excalidraw/utils@0.1.0/dist/excalidraw-utils.min.js"></script>
+<script src="https://unpkg.com/@drawboard/utils@0.1.0/dist/drawboard-utils.min.js"></script>
 <script>
-  // ExcalidrawUtils is a global variable defined by excalidraw.min.js
-  const { exportToSvg, exportToBlob } = ExcalidrawUtils;
+  // DrawboardUtils is a global variable defined by drawboard.min.js
+  const { exportToSvg, exportToBlob } = DrawboardUtils;
 </script>
 ```
 
 Here's the `exportToBlob` and `exportToSvg` functions in action:
 
 ```js
-const excalidrawDiagram = {
-  type: "excalidraw",
+const drawboardDiagram = {
+  type: "drawboard",
   version: 2,
-  source: "https://excalidraw.com",
+  source: "https://drawboard.com",
   elements: [
     {
       id: "vWrqOAfkind2qcm7LDAGZ",
@@ -82,14 +82,14 @@ const excalidrawDiagram = {
   },
 };
 
-// Export the Excalidraw diagram as SVG string
-const svg = exportToSvg(excalidrawDiagram);
+// Export the Drawboard diagram as SVG string
+const svg = exportToSvg(drawboardDiagram);
 console.log(svg.outerHTML);
 
-// Export the Excalidraw diagram as PNG Blob URL
+// Export the Drawboard diagram as PNG Blob URL
 (async () => {
   const blob = await exportToBlob({
-    ...excalidrawDiagram,
+    ...drawboardDiagram,
     mimeType: "image/png",
   });
 

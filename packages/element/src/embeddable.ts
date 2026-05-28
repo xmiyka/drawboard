@@ -3,18 +3,18 @@ import {
   VERTICAL_ALIGN,
   escapeDoubleQuotes,
   getFontString,
-} from "@excalidraw/common";
-
-import type { ExcalidrawProps } from "@excalidraw/excalidraw/types";
-import type { MarkRequired } from "@excalidraw/common/utility-types";
+} from "@drawboard/common";
 
 import { newTextElement } from "./newElement";
 import { wrapText } from "./textWrapping";
 import { isIframeElement } from "./typeChecks";
 
+import type { MarkRequired } from "@drawboard/common/utility-types";
+import type { DrawboardProps } from "@drawboard/drawboard/types";
+
 import type {
-  ExcalidrawElement,
-  ExcalidrawIframeLikeElement,
+  DrawboardElement,
+  DrawboardIframeLikeElement,
   IframeData,
 } from "./types";
 
@@ -91,7 +91,7 @@ const ALLOWED_DOMAINS = new Set([
   "vimeo.com",
   "player.vimeo.com",
   "figma.com",
-  "link.excalidraw.com",
+  "link.drawboard.com",
   "gist.github.com",
   "twitter.com",
   "x.com",
@@ -323,8 +323,8 @@ export const getEmbedLink = (
 };
 
 export const createPlaceholderEmbeddableLabel = (
-  element: ExcalidrawIframeLikeElement,
-): ExcalidrawElement => {
+  element: DrawboardIframeLikeElement,
+): DrawboardElement => {
   let text: string;
   if (isIframeElement(element)) {
     text = "IFrame element";
@@ -424,7 +424,7 @@ export const maybeParseEmbedSrc = (str: string): string => {
 
 export const embeddableURLValidator = (
   url: string | null | undefined,
-  validateEmbeddable: ExcalidrawProps["validateEmbeddable"],
+  validateEmbeddable: DrawboardProps["validateEmbeddable"],
 ): boolean => {
   if (!url) {
     return false;

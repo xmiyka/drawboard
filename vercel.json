@@ -6,7 +6,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://excalidraw.com"
+          "value": "*"
         },
         {
           "key": "X-Content-Type-Options",
@@ -31,7 +31,7 @@
         },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://excalidraw.com"
+          "value": "*"
         }
       ]
     },
@@ -52,19 +52,20 @@
   "redirects": [
     {
       "source": "/webex/:match*",
-      "destination": "https://for-webex.excalidraw.com"
+      "destination": "https://for-webex.drawboard.com"
     },
     {
       "source": "/:path*",
       "has": [
         {
           "type": "host",
-          "value": "vscode.excalidraw.com"
+          "value": "vscode.drawboard.com"
         }
       ],
-      "destination": "https://marketplace.visualstudio.com/items?itemName=pomdtr.excalidraw-editor"
+      "destination": "https://marketplace.visualstudio.com/items?itemName=pomdtr.drawboard-editor"
     }
   ],
-  "outputDirectory": "excalidraw-app/build",
-  "installCommand": "yarn install"
+  "outputDirectory": "drawboard-app/build",
+  "installCommand": "curl -fsSL https://bun.sh/install | bash && export BUN_INSTALL=\"$HOME/.bun\" && export PATH=\"$BUN_INSTALL/bin:$PATH\" && bun install",
+  "buildCommand": "export BUN_INSTALL=\"$HOME/.bun\" && export PATH=\"$BUN_INSTALL/bin:$PATH\" && bun build:packages && bun build:app"
 }

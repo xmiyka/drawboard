@@ -1,4 +1,4 @@
-import { reseed } from "@excalidraw/common";
+import { reseed } from "@drawboard/common";
 
 import {
   actionSendBackward,
@@ -6,26 +6,26 @@ import {
   actionBringToFront,
   actionSendToBack,
   actionDuplicateSelection,
-} from "@excalidraw/excalidraw/actions";
+} from "@drawboard/drawboard/actions";
 
-import { Excalidraw } from "@excalidraw/excalidraw";
+import { Drawboard } from "@drawboard/drawboard";
 
-import { API } from "@excalidraw/excalidraw/tests/helpers/api";
+import { API } from "@drawboard/drawboard/tests/helpers/api";
 import {
   act,
   getCloneByOrigId,
   render,
   unmountComponent,
-} from "@excalidraw/excalidraw/tests/test-utils";
-
-import type { AppState } from "@excalidraw/excalidraw/types";
+} from "@drawboard/drawboard/tests/test-utils";
 
 import { selectGroupsForSelectedElements } from "../src/groups";
 
+import type { AppState } from "@drawboard/drawboard/types";
+
 import type {
-  ExcalidrawElement,
-  ExcalidrawFrameElement,
-  ExcalidrawSelectionElement,
+  DrawboardElement,
+  DrawboardFrameElement,
+  DrawboardSelectionElement,
 } from "../src/types";
 
 unmountComponent();
@@ -37,15 +37,15 @@ beforeEach(() => {
 
 const { h } = window;
 
-type ExcalidrawElementType = Exclude<
-  ExcalidrawElement,
-  ExcalidrawSelectionElement
+type DrawboardElementType = Exclude<
+  DrawboardElement,
+  DrawboardSelectionElement
 >["type"];
 
 const populateElements = (
   elements: {
     id: string;
-    type?: ExcalidrawElementType;
+    type?: DrawboardElementType;
     isDeleted?: boolean;
     isSelected?: boolean;
     groupIds?: string[];
@@ -54,8 +54,8 @@ const populateElements = (
     width?: number;
     height?: number;
     containerId?: string;
-    frameId?: ExcalidrawFrameElement["id"];
-    index?: ExcalidrawElement["index"];
+    frameId?: DrawboardFrameElement["id"];
+    index?: DrawboardElement["index"];
   }[],
   appState?: Partial<AppState>,
 ) => {
@@ -145,8 +145,8 @@ const assertZindex = ({
     isSelected?: true;
     groupIds?: string[];
     containerId?: string;
-    frameId?: ExcalidrawFrameElement["id"];
-    type?: ExcalidrawElementType;
+    frameId?: DrawboardFrameElement["id"];
+    type?: DrawboardElementType;
   }[];
   appState?: Partial<AppState>;
   operations: [Actions, string[]][];
@@ -161,7 +161,7 @@ const assertZindex = ({
 
 describe("z-index manipulation", () => {
   beforeEach(async () => {
-    await render(<Excalidraw />);
+    await render(<Drawboard />);
   });
 
   it("send back", () => {
@@ -1231,7 +1231,7 @@ describe("z-index manipulation", () => {
 
 describe("z-indexing with frames", () => {
   beforeEach(async () => {
-    await render(<Excalidraw />);
+    await render(<Drawboard />);
   });
 
   // naming scheme:

@@ -1,12 +1,12 @@
-import { API } from "@excalidraw/excalidraw/tests/helpers/api";
-
-import type { Bounds } from "@excalidraw/common";
+import { API } from "@drawboard/drawboard/tests/helpers/api";
 
 import {
   elementPartiallyOverlapsWithOrContainsBBox,
   elementsOverlappingBBox,
   isElementInsideBBox,
 } from "../src/withinBounds";
+
+import type { Bounds } from "@drawboard/common";
 
 const makeElement = (x: number, y: number, width: number, height: number) =>
   API.createElement({

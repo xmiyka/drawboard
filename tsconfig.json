@@ -19,18 +19,18 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@excalidraw/common": ["./packages/common/src/index.ts"],
-      "@excalidraw/common/*": ["./packages/common/src/*"],
-      "@excalidraw/excalidraw": ["./packages/excalidraw/index.tsx"],
-      "@excalidraw/excalidraw/*": ["./packages/excalidraw/*"],
-      "@excalidraw/element": ["./packages/element/src/index.ts"],
-      "@excalidraw/element/*": ["./packages/element/src/*"],
-      "@excalidraw/math": ["./packages/math/src/index.ts"],
-      "@excalidraw/math/*": ["./packages/math/src/*"],
-      "@excalidraw/utils": ["./packages/utils/src/index.ts"],
-      "@excalidraw/utils/*": ["./packages/utils/src/*"]
+      "@drawboard/common": ["./packages/common/src/index.ts"],
+      "@drawboard/common/*": ["./packages/common/src/*"],
+      "@drawboard/drawboard": ["./packages/drawboard/index.tsx"],
+      "@drawboard/drawboard/*": ["./packages/drawboard/*"],
+      "@drawboard/element": ["./packages/element/src/index.ts"],
+      "@drawboard/element/*": ["./packages/element/src/*"],
+      "@drawboard/math": ["./packages/math/src/index.ts"],
+      "@drawboard/math/*": ["./packages/math/src/*"],
+      "@drawboard/utils": ["./packages/utils/src/index.ts"],
+      "@drawboard/utils/*": ["./packages/utils/src/*"]
     }
   },
-  "include": ["packages", "excalidraw-app"],
+  "include": ["packages", "drawboard-app"],
   "exclude": ["examples", "dist", "types", "tests"]
 }

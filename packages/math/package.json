@@ -1,5 +1,5 @@
 {
-  "name": "@excalidraw/math",
+  "name": "@drawboard/math",
   "version": "0.18.0",
   "type": "module",
   "types": "./dist/types/math/src/index.d.ts",
@@ -14,22 +14,22 @@
     },
     "./*": {
       "types": "./dist/types/math/src/*.d.ts",
-      "development": "./dist/dev/index.js",
-      "production": "./dist/prod/index.js",
-      "default": "./dist/prod/index.js"
+      "development": "./dist/dev/*.js",
+      "production": "./dist/prod/*.js",
+      "default": "./dist/prod/*.js"
     }
   },
   "files": [
     "dist/*"
   ],
-  "description": "Excalidraw math functions",
+  "description": "Drawboard math functions",
   "publishConfig": {
     "access": "public"
   },
   "license": "MIT",
   "keywords": [
-    "excalidraw",
-    "excalidraw-math",
+    "drawboard",
+    "drawboard-math",
     "math",
     "vector",
     "algebra",
@@ -54,13 +54,13 @@
       "last 1 safari version"
     ]
   },
-  "bugs": "https://github.com/excalidraw/excalidraw/issues",
-  "repository": "https://github.com/excalidraw/excalidraw",
+  "bugs": "https://github.com/drawboard/drawboard/issues",
+  "repository": "https://github.com/drawboard/drawboard",
   "scripts": {
     "gen:types": "rimraf types && tsc",
-    "build:esm": "rimraf dist && node ../../scripts/buildBase.js && yarn gen:types"
+    "build:esm": "rimraf dist && node ../../scripts/buildBase.js && bun gen:types"
   },
   "dependencies": {
-    "@excalidraw/common": "0.18.0"
+    "@drawboard/common": "0.18.0"
   }
 }

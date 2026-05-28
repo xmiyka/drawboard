@@ -1,4 +1,4 @@
-import { KEYS } from "@excalidraw/common";
+import { KEYS } from "@drawboard/common";
 
 import {
   actionAlignVerticallyCentered,
@@ -8,17 +8,17 @@ import {
   actionAlignBottom,
   actionAlignLeft,
   actionAlignRight,
-} from "@excalidraw/excalidraw/actions";
-import { defaultLang, setLanguage } from "@excalidraw/excalidraw/i18n";
-import { Excalidraw } from "@excalidraw/excalidraw";
+} from "@drawboard/drawboard/actions";
+import { defaultLang, setLanguage } from "@drawboard/drawboard/i18n";
+import { Drawboard } from "@drawboard/drawboard";
 
-import { API } from "@excalidraw/excalidraw/tests/helpers/api";
-import { UI, Pointer, Keyboard } from "@excalidraw/excalidraw/tests/helpers/ui";
+import { API } from "@drawboard/drawboard/tests/helpers/api";
+import { UI, Pointer, Keyboard } from "@drawboard/drawboard/tests/helpers/ui";
 import {
   act,
   unmountComponent,
   render,
-} from "@excalidraw/excalidraw/tests/test-utils";
+} from "@drawboard/drawboard/tests/test-utils";
 
 const mouse = new Pointer("mouse");
 
@@ -66,7 +66,7 @@ describe("aligning", () => {
     await act(() => {
       return setLanguage(defaultLang);
     });
-    await render(<Excalidraw handleKeyboardGlobally={true} />);
+    await render(<Drawboard handleKeyboardGlobally={true} />);
   });
 
   it("aligns two objects correctly to the top", () => {

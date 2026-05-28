@@ -7,7 +7,7 @@ import {
   pointFrom,
   pointRotateRads,
   type Radians,
-} from "@excalidraw/math";
+} from "@drawboard/math";
 
 import {
   BOUND_TEXT_PADDING,
@@ -23,23 +23,7 @@ import {
   getVerticalOffset,
   invariant,
   applyDarkModeFilter,
-} from "@excalidraw/common";
-
-import type {
-  AppState,
-  StaticCanvasAppState,
-  Zoom,
-  InteractiveCanvasAppState,
-  ElementsPendingErasure,
-  PendingExcalidrawElements,
-  NormalizedZoomValue,
-} from "@excalidraw/excalidraw/types";
-
-import type {
-  StaticCanvasRenderConfig,
-  RenderableElementsMap,
-  InteractiveCanvasRenderConfig,
-} from "@excalidraw/excalidraw/scene/types";
+} from "@drawboard/common";
 
 import { getElementAbsoluteCoords, getElementBounds } from "./bounds";
 import { getUncroppedImageElement } from "./cropElement";
@@ -68,13 +52,29 @@ import { getCornerRadius } from "./utils";
 import { ShapeCache } from "./shape";
 
 import type {
-  ExcalidrawElement,
-  ExcalidrawTextElement,
-  NonDeletedExcalidrawElement,
-  ExcalidrawFreeDrawElement,
-  ExcalidrawImageElement,
-  ExcalidrawTextElementWithContainer,
-  ExcalidrawFrameLikeElement,
+  StaticCanvasRenderConfig,
+  RenderableElementsMap,
+  InteractiveCanvasRenderConfig,
+} from "@drawboard/drawboard/scene/types";
+
+import type {
+  AppState,
+  StaticCanvasAppState,
+  Zoom,
+  InteractiveCanvasAppState,
+  ElementsPendingErasure,
+  PendingDrawboardElements,
+  NormalizedZoomValue,
+} from "@drawboard/drawboard/types";
+
+import type {
+  DrawboardElement,
+  DrawboardTextElement,
+  NonDeletedDrawboardElement,
+  DrawboardFreeDrawElement,
+  DrawboardImageElement,
+  DrawboardTextElementWithContainer,
+  DrawboardFrameLikeElement,
   NonDeletedSceneElementsMap,
   ElementsMap,
 } from "./types";
@@ -82,13 +82,13 @@ import type {
 import type { RoughCanvas } from "roughjs/bin/canvas";
 
 const isPendingImageElement = (
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   renderConfig: StaticCanvasRenderConfig,
 ) =>
   isInitializedImageElement(element) &&
   !renderConfig.imageCache.has(element.fileId);
 
-const getCanvasPadding = (element: ExcalidrawElement) => {
+const getCanvasPadding = (element: DrawboardElement) => {
   switch (element.type) {
     case "freedraw":
       return element.strokeWidth * 12;
@@ -105,10 +105,10 @@ const getCanvasPadding = (element: ExcalidrawElement) => {
 };
 
 export const getRenderOpacity = (
-  element: ExcalidrawElement,
-  containingFrame: ExcalidrawFrameLikeElement | null,
+  element: DrawboardElement,
+  containingFrame: DrawboardFrameLikeElement | null,
   elementsPendingErasure: ElementsPendingErasure,
-  pendingNodes: Readonly<PendingExcalidrawElements> | null,
+  pendingNodes: Readonly<PendingDrawboardElements> | null,
   globalAlpha: number = 1,
 ) => {
   // multiplying frame opacity with element opacity to combine them
@@ -130,8 +130,8 @@ export const getRenderOpacity = (
   return opacity;
 };
 
-export interface ExcalidrawElementWithCanvas {
-  element: ExcalidrawElement | ExcalidrawTextElement;
+export interface DrawboardElementWithCanvas {
+  element: DrawboardElement | DrawboardTextElement;
   canvas: HTMLCanvasElement;
   theme: AppState["theme"];
   scale: number;
@@ -140,13 +140,13 @@ export interface ExcalidrawElementWithCanvas {
   canvasOffsetX: number;
   canvasOffsetY: number;
   boundTextElementVersion: number | null;
-  imageCrop: ExcalidrawImageElement["crop"] | null;
+  imageCrop: DrawboardImageElement["crop"] | null;
   containingFrameOpacity: number;
   boundTextCanvas: HTMLCanvasElement;
 }
 
 const cappedElementCanvasSize = (
-  element: NonDeletedExcalidrawElement,
+  element: NonDeletedDrawboardElement,
   elementsMap: ElementsMap,
   zoom: Zoom,
 ): {
@@ -201,12 +201,12 @@ const cappedElementCanvasSize = (
 };
 
 const generateElementCanvas = (
-  element: NonDeletedExcalidrawElement,
+  element: NonDeletedDrawboardElement,
   elementsMap: NonDeletedSceneElementsMap,
   zoom: Zoom,
   renderConfig: StaticCanvasRenderConfig,
   appState: StaticCanvasAppState | InteractiveCanvasAppState,
-): ExcalidrawElementWithCanvas | null => {
+): DrawboardElementWithCanvas | null => {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d")!;
   const padding = getCanvasPadding(element);
@@ -358,7 +358,7 @@ IMAGE_ERROR_PLACEHOLDER_IMG.src = `data:${MIME_TYPES.svg},${encodeURIComponent(
 )}`;
 
 const drawImagePlaceholder = (
-  element: ExcalidrawImageElement,
+  element: DrawboardImageElement,
   context: CanvasRenderingContext2D,
 ) => {
   context.fillStyle = "#E7E7E7";
@@ -383,7 +383,7 @@ const drawImagePlaceholder = (
 };
 
 const drawElementOnCanvas = (
-  element: NonDeletedExcalidrawElement,
+  element: NonDeletedDrawboardElement,
   rc: RoughCanvas,
   context: CanvasRenderingContext2D,
   renderConfig: StaticCanvasRenderConfig,
@@ -547,12 +547,12 @@ const drawElementOnCanvas = (
 };
 
 export const elementWithCanvasCache = new WeakMap<
-  ExcalidrawElement,
-  ExcalidrawElementWithCanvas
+  DrawboardElement,
+  DrawboardElementWithCanvas
 >();
 
 const generateElementWithCanvas = (
-  element: NonDeletedExcalidrawElement,
+  element: NonDeletedDrawboardElement,
   elementsMap: NonDeletedSceneElementsMap,
   renderConfig: StaticCanvasRenderConfig,
   appState: StaticCanvasAppState | InteractiveCanvasAppState,
@@ -609,7 +609,7 @@ const generateElementWithCanvas = (
 };
 
 const drawElementFromCanvas = (
-  elementWithCanvas: ExcalidrawElementWithCanvas,
+  elementWithCanvas: DrawboardElementWithCanvas,
   context: CanvasRenderingContext2D,
   renderConfig: StaticCanvasRenderConfig,
   appState: StaticCanvasAppState | InteractiveCanvasAppState,
@@ -682,7 +682,7 @@ const drawElementFromCanvas = (
       const textElement = getBoundTextElement(
         element,
         allElementsMap,
-      ) as ExcalidrawTextElementWithContainer;
+      ) as DrawboardTextElementWithContainer;
       const coords = getContainerCoords(element);
       context.strokeStyle = "#c92a2a";
       context.lineWidth = 3;
@@ -700,7 +700,7 @@ const drawElementFromCanvas = (
 };
 
 export const renderSelectionElement = (
-  element: NonDeletedExcalidrawElement,
+  element: NonDeletedDrawboardElement,
   context: CanvasRenderingContext2D,
   appState: InteractiveCanvasAppState,
   selectionColor: InteractiveCanvasRenderConfig["selectionColor"],
@@ -724,7 +724,7 @@ export const renderSelectionElement = (
 };
 
 export const renderElement = (
-  element: NonDeletedExcalidrawElement,
+  element: NonDeletedDrawboardElement,
   elementsMap: RenderableElementsMap,
   allElementsMap: NonDeletedSceneElementsMap,
   rc: RoughCanvas,
@@ -845,7 +845,7 @@ export const renderElement = (
             const boundTextCoords =
               LinearElementEditor.getBoundTextElementPosition(
                 container,
-                element as ExcalidrawTextElementWithContainer,
+                element as DrawboardTextElementWithContainer,
                 elementsMap,
               );
             shiftX = (x2 - x1) / 2 - (boundTextCoords.x - x1);
@@ -1018,7 +1018,7 @@ export const renderElement = (
 };
 
 export function getFreedrawOutlineAsSegments(
-  element: ExcalidrawFreeDrawElement,
+  element: DrawboardFreeDrawElement,
   points: [number, number][],
   elementsMap: ElementsMap,
 ) {

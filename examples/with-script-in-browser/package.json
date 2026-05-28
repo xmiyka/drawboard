@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "@excalidraw/excalidraw": "*",
+    "@drawboard/drawboard": "*",
     "browser-fs-access": "0.29.1"
   },
   "devDependencies": {
@@ -16,7 +16,7 @@
     "start": "vite",
     "build": "vite build",
     "preview": "vite preview --port 5002",
-    "build:preview": "yarn build && yarn preview",
-    "build:packages": "yarn --cwd ../../ build:packages"
+    "build:preview": "bun build && bun preview",
+    "build:packages": "bun --cwd ../../ build:packages"
   }
 }

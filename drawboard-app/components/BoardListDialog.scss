@@ -1,0 +1,374 @@
+@import "../../packages/drawboard/css/variables.module.scss";
+
+.drawboard {
+  .board-list-dialog.Modal {
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+
+  .board-list-dialog .Modal__content {
+    width: min(88vw, 76rem);
+    max-width: min(88vw, 76rem);
+    height: min(90vh, 62rem);
+    max-height: min(90vh, 62rem);
+    margin-inline: auto;
+    overflow: hidden;
+
+    @include isMobile {
+      width: calc(100vw - 1rem);
+      max-width: calc(100vw - 1rem);
+      height: calc(100vh - 1rem);
+      max-height: calc(100vh - 1rem);
+    }
+  }
+
+  .BoardListDialog {
+    display: grid;
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    gap: 1rem;
+    padding: clamp(0.25rem, 0.8vw, 0.75rem);
+    min-width: 0;
+    height: 100%;
+    min-height: 0;
+    font-family: "Assistant";
+
+    &__header {
+      border-bottom: 1px solid var(--dialog-border-color);
+      padding-bottom: 0.95rem;
+    }
+
+    &__title {
+      margin: 0;
+      font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--text-primary-color);
+    }
+
+    &__subtitle {
+      margin: 0.45rem 0 0;
+      color: var(--text-primary-color);
+      opacity: 0.78;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    &__createRow {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.65rem;
+      align-items: end;
+
+      @include isMobile {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &__saveButton {
+      white-space: nowrap;
+      min-width: 9rem;
+      justify-content: center;
+    }
+
+    &__sectionHeader {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.2rem;
+
+      @include isMobile {
+        grid-template-columns: 1fr;
+        align-items: start;
+        gap: 0.5rem;
+      }
+    }
+
+    &__sectionTitle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+
+      h3 {
+        margin: 0;
+        font-size: 1.02rem;
+      }
+    }
+
+    &__count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 999px;
+      background: var(--color-surface-high);
+      color: var(--text-primary-color);
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+
+    &__sectionActions {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    &__newEmpty {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0 0.95rem;
+      height: 2.2rem;
+      font-size: 0.84rem;
+      font-weight: 700;
+      border-radius: 12px;
+      white-space: nowrap;
+      justify-self: end;
+
+      @include isMobile {
+        justify-self: start;
+      }
+      background: linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--color-primary) 65%, #fff 35%),
+        color-mix(in oklab, var(--color-primary) 70%, #000 20%)
+      );
+      color: #0b0d14;
+      border: 1px solid color-mix(in oklab, var(--color-primary) 70%, #000 30%);
+      box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        filter 160ms ease;
+
+      &:hover {
+        transform: translateY(-1px);
+        filter: saturate(1.08);
+        box-shadow:
+          0 10px 22px rgba(0, 0, 0, 0.26),
+          inset 0 1px 0 rgba(255, 255, 255, 0.4),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+      }
+
+      &:active {
+        transform: translateY(1px);
+        filter: saturate(1.02);
+        box-shadow:
+          0 4px 10px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.25),
+          inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow:
+          0 0 0 2px color-mix(in oklab, var(--color-primary) 65%, transparent),
+          0 6px 14px rgba(0, 0, 0, 0.2);
+      }
+
+      &:disabled {
+        opacity: 0.65;
+        transform: none;
+        filter: none;
+        box-shadow: none;
+      }
+    }
+
+    &__state {
+      border-radius: var(--border-radius-md);
+      border: 1px dashed var(--dialog-border-color);
+      color: var(--text-primary-color);
+      opacity: 0.78;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    &__grid {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+      gap: 0.7rem;
+      align-content: start;
+      height: 100%;
+      min-height: 0;
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+
+    &__card {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      border: 1px solid var(--dialog-border-color);
+      border-radius: var(--border-radius-lg);
+      background: color-mix(in oklab, var(--island-bg-color) 92%, #000 8%);
+      transition:
+        border-color 140ms ease,
+        transform 140ms ease,
+        box-shadow 140ms ease;
+
+      &:hover {
+        transform: translateY(-1px);
+        border-color: var(--color-primary);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+      }
+
+      &.is-active {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary) inset;
+      }
+    }
+
+    &__itemMain {
+      border: 0;
+      background: transparent;
+      padding: 0.85rem 0.95rem;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      width: 100%;
+    }
+
+    &__itemTitleRow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    &__itemTitle {
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--text-primary-color);
+      word-break: break-word;
+    }
+
+    &__itemMeta {
+      margin-top: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--text-primary-color);
+      opacity: 0.72;
+    }
+
+    &__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      border-radius: 999px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: color-mix(in oklab, var(--color-primary) 20%, transparent);
+      color: var(--color-primary);
+    }
+
+    &__actions {
+      display: flex;
+      gap: 0.45rem;
+      padding: 0 0.8rem 0.75rem;
+    }
+
+    &__action {
+      border-radius: var(--border-radius-md);
+      min-width: 2.35rem;
+      min-height: 2.2rem;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-primary-color);
+      opacity: 0.9;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &--load {
+        color: var(--color-primary);
+      }
+
+      &--danger {
+        color: var(--color-danger);
+      }
+    }
+
+    &__renameForm {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      padding: 0.85rem 0.95rem;
+    }
+
+    &__renameInput {
+      width: 100%;
+      padding: 0.4rem 0.65rem;
+      font-size: 0.92rem;
+      border: 1.5px solid var(--color-primary);
+      border-radius: var(--border-radius-md);
+      background: var(--island-bg-color);
+      color: var(--text-primary-color);
+      outline: none;
+
+      &:focus {
+        box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-primary) 25%, transparent);
+      }
+    }
+
+    &__renameActions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    &__renameConfirm {
+      flex: 1;
+    }
+
+    &__deleteConfirm {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      padding: 0.85rem 0.95rem;
+    }
+
+    &__deleteMsg {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-primary-color);
+    }
+
+    &__deleteActions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    &__deleteDanger {
+      flex: 1;
+    }
+
+    &__empty {
+      border: 1px dashed var(--dialog-border-color);
+      border-radius: var(--border-radius-lg);
+      padding: 2.1rem 1rem;
+      text-align: center;
+      color: var(--text-primary-color);
+      min-height: 100%;
+      display: grid;
+      align-content: center;
+
+      p {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      small {
+        display: block;
+        margin-top: 0.35rem;
+        opacity: 0.76;
+      }
+    }
+  }
+}

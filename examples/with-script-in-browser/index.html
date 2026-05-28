@@ -11,8 +11,8 @@
     <title>React App</title>
     <script>
       window.name = "codesandbox";
-      window.EXCALIDRAW_ASSET_PATH =
-        "https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/";
+      window.DRAWBOARD_ASSET_PATH =
+        "https://esm.sh/@drawboard/drawboard@0.18.0/dist/prod/";
     </script>
   </head>
 
@@ -21,10 +21,10 @@
     <div id="root"></div>
 
     <script type="module">
-      import * as ExcalidrawLib from "@excalidraw/excalidraw";
+      import * as DrawboardLib from "@drawboard/drawboard";
 
-      console.log(ExcalidrawLib);
-      window.ExcalidrawLib = ExcalidrawLib;
+      console.log(DrawboardLib);
+      window.DrawboardLib = DrawboardLib;
     </script>
     <script type="module" src="index.tsx"></script>
   </body>

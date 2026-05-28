@@ -5,19 +5,19 @@ import {
   pointFrom,
   type GlobalPoint,
   type LocalPoint,
-} from "@excalidraw/math";
-import { type Bounds, isBounds } from "@excalidraw/common";
+} from "@drawboard/math";
+import { type Bounds, isBounds } from "@drawboard/common";
 import {
   getElementBounds,
   intersectElementWithLineSegment,
   isFreeDrawElement,
   isLinearElement,
   isPathALoop,
-} from "@excalidraw/element";
+} from "@drawboard/element";
 
-import type { ElementsMap, ExcalidrawElement } from "@excalidraw/element/types";
-import type { Curve } from "@excalidraw/math";
-import type { LineSegment } from "@excalidraw/utils";
+import type { ElementsMap, DrawboardElement } from "@drawboard/element/types";
+import type { Curve } from "@drawboard/math";
+import type { LineSegment } from "@drawboard/utils";
 
 // The global data holder to collect the debug operations
 declare global {
@@ -43,7 +43,7 @@ export type DebugPolygon = {
 };
 
 export const debugDrawHitVolume = (
-  element: ExcalidrawElement,
+  element: DrawboardElement,
   elementsMap: ElementsMap,
   options?: {
     rays?: number;
